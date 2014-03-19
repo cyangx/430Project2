@@ -116,9 +116,7 @@ public class UserInterface {
         System.out.println(ADD_PRODUCTS + " to add product");
         System.out.println(ADD_MANUFACTURER + " to add manufacturer");
         System.out.println(ACCEPT_ORDERS + " to accept orders from a client");
-
         System.out.println(ADD_SUPPLIER + " to add a supplier to a product");
-
         System.out.println(DELETE_SUPPLIER + " to delete a supplier to a product");
         System.out.println(SUPPLIER_LIST + " to display a supplier list for a product");
         System.out.println(ACCEPT_PAYMENT + " to accept payment from a client");
@@ -278,10 +276,6 @@ public class UserInterface {
             if (p != null) {
 
                 quantity = getNumber("Enter quantity recieved:");
-                //Iterator allWaitlist = warehouse.getWaitList(productId);
-                //while (allWaitlist.hasNext()) {
-                //System.out.println("allWaitlist.hasnext: " + allWaitlist.hasNext());
-                //Wait wait = (Wait) (allWaitlist.next());
                 for (Iterator waitList = warehouse.getWaitList(productId); waitList.hasNext();) {
                     Wait wait = (Wait) waitList.next();
                     System.out.println(wait.toString());
@@ -362,7 +356,6 @@ public class UserInterface {
         do {
             String clientID = getToken("Enter client ID: ");
 
-            Iterator allMembers = warehouse.getMembers();
             if (warehouse.findClient(clientID)) {
                 //client is found so we accept a payment from a client
 

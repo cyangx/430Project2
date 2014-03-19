@@ -45,7 +45,4 @@ public class Order implements Serializable {
 
     }
 
-    public String toString() {
-        return "Test";
-    }
 }
