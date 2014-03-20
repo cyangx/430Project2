@@ -45,12 +45,12 @@ public class WareContext {
 
   private void retrieve() {
     try {
-      Warehouse tempLibrary = Warehouse.retrieve();
-      if (tempLibrary != null) {
-        System.out.println(" The library has been successfully retrieved from the file LibraryData \n" );
-        warehouse = tempLibrary;
+      Warehouse tempWarehouse = Warehouse.retrieve();
+      if (tempWarehouse != null) {
+        System.out.println(" The warehouse has been successfully retrieved from the file WarehouseData \n" );
+        warehouse = tempWarehouse;
       } else {
-        System.out.println("File doesnt exist; creating new library" );
+        System.out.println("File doesnt exist; creating new warehouse" );
         warehouse = Warehouse.instance();
       }
     } catch(Exception cnfe) {
@@ -70,8 +70,8 @@ public class WareContext {
   public String getUser()
   { return userID;}
 
-  private WareContext() { //constructor
-    System.out.println("In Libcontext constructor");
+  private WareContext() { 
+//constructorSystem.out.println("In WareContext constructor");
     if (yesOrNo("Look for saved data and  use it?")) {
       retrieve();
     } else {
@@ -124,7 +124,7 @@ public class WareContext {
   {
    if (yesOrNo("Save data?")) {
       if (warehouse.save()) {
-         System.out.println(" The library has been successfully saved in the file LibraryData \n" );
+         System.out.println(" The warehouse has been successfully saved in the file WarehouseData \n" );
        } else {
          System.out.println(" There has been an error in saving \n" );
        }
