@@ -69,6 +69,9 @@ public class WareContext {
 
   public String getUser()
   { return userID;}
+  
+//  public void setSales() ---> A method to set Sales Person, it has no ID
+//  { userID = uID;}
 
   private WareContext() { 
 //constructorSystem.out.println("In WareContext constructor");
