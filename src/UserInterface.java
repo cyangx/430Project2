@@ -267,7 +267,6 @@ public class UserInterface {
     }
 
     public void acceptShipment() {
-
         do {
             String productId = getToken("Enter product ID: ");
             Product p = warehouse.findProduct(productId);
@@ -413,10 +412,8 @@ public class UserInterface {
                 Wait waitList = (Wait) (wholeWaitList.next());
                 System.out.println(waitList.toString());
             }
-
         } else {
             System.out.println("Product not found.");
-
         }
     }
 
