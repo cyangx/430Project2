@@ -10,7 +10,7 @@ public class SalesState extends WareState {
     private static Warehouse warehouse;
     private WareContext context;
     private static SalesState instance;
-    
+
     private static final int EXIT = IOHelper.EXIT;
     private static final int ADD_PRODUCT = 1;
     private static final int ACCEPT_PAYMENT = 2;
@@ -18,8 +18,9 @@ public class SalesState extends WareState {
     private static final int SHOW_WAITLIST = 4;
     private static final int ACCEPT_SHIPMENT = 5;
     private static final int SHOW_PRODUCTS = 6;
-    private static final int GET_PRODUCT_SUPPLIERS = 7;
-    private static final int BECOME_CLIENT = 8;
+    private static final int ADD_SUPPLIER = 7;
+    private static final int GET_PRODUCT_SUPPLIERS = 8;
+    private static final int BECOME_CLIENT = 9;
     private static final int HELP = IOHelper.HELP;
 
     private SalesState() {
@@ -56,6 +57,7 @@ public class SalesState extends WareState {
         IOHelper.Println(SHOW_WAITLIST + " to get waitlist for products");
         IOHelper.Println(ACCEPT_SHIPMENT + " to accept shipment");
         IOHelper.Println(SHOW_PRODUCTS + " to get a list of products");
+        IOHelper.Println(ADD_SUPPLIER + " to add a supplier to a product");
         IOHelper.Println(GET_PRODUCT_SUPPLIERS + " to view suppliers for a product");
         IOHelper.Println(BECOME_CLIENT + " to become a client");
         IOHelper.Println(HELP + " for help");
@@ -172,6 +174,36 @@ public class SalesState extends WareState {
         }
     }
 
+    private void addSupplier() {
+
+        do {
+            String pId = IOHelper.getToken("Enter product id");
+            Product p = warehouse.findProduct(pId);
+
+            if (p != null) {
+                String mId = IOHelper.getToken("Enter manufacturer id");
+                Manufacturer m;
+                m = warehouse.findManufacturer(mId);
+                if (m != null) {
+                    int price = getNumber("Enter price");
+                    warehouse.addSupplierToProduct(p, m, price);
+                    System.out.println("Supplier added.");
+                    break;
+                } else {
+                    System.out.println("Could not find manufacturer.");
+                }
+            } else {
+                System.out.println("Product not found.");
+            }
+
+            if (!IOHelper.yesOrNo("Try again?")) {
+                break;
+            }
+
+        } while (true);
+
+    }
+
     private void supplierList() {
 
         IOHelper.Println("Show supplier list for product.");
@@ -235,6 +267,9 @@ public class SalesState extends WareState {
                     break;
                 case SHOW_PRODUCTS:
                     showProducts();
+                    break;
+                case ADD_SUPPLIER:
+                    addSupplier();
                     break;
                 case GET_PRODUCT_SUPPLIERS:
                     supplierList();

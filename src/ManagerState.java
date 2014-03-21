@@ -34,9 +34,6 @@ public class ManagerState extends WareState {
     private static final int SHOW_MANUFACTURERS = 4;
     private static final int SHOW_CLIENTS = 5;
     private static final int SALES_MENU = 6;
-    //common calls
-    private static final int SAVE = 7;
-    private static final int RETRIEVE = 8;
     private static final int HELP = IOHelper.HELP;
     
     private ManagerState() {
@@ -159,8 +156,6 @@ public class ManagerState extends WareState {
         IOHelper.Println(SHOW_MANUFACTURERS + " to  display all manufacturers");
         IOHelper.Println(SHOW_CLIENTS + " to  display all clients");
         IOHelper.Println(SALES_MENU + " to  switch to the Sales Person menu");
-        IOHelper.Println(SAVE + " to  save the data");
-        IOHelper.Println(RETRIEVE + " to retreive the stored data");
         IOHelper.Println(HELP + " for help");
     }
     
@@ -185,10 +180,6 @@ public class ManagerState extends WareState {
                 case SHOW_CLIENTS: showClients();
                                 break;
                 case SALES_MENU: salesMenu();
-                                break;
-                case SAVE: save();
-                                break;
-                case RETRIEVE: retrieve();
                                 break;
                 case HELP: help();
                                 break;
