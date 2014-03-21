@@ -52,7 +52,7 @@ public class ManagerState extends WareState {
         return instance;
     }
     
-    public void addClient() {
+    private void addClient() {
         String name = IOHelper.getToken("Enter client name");
         String address = IOHelper.getToken("Enter address");
         String phone = IOHelper.getToken("Enter phone");
@@ -64,7 +64,7 @@ public class ManagerState extends WareState {
         System.out.println(result);
     }
     
-    public void addManufacturer() {
+    private void addManufacturer() {
         String name = IOHelper.getToken("Enter manufacturer name");
         String address = IOHelper.getToken("Enter address");
         String phone = IOHelper.getToken("Enter phone");
@@ -76,7 +76,7 @@ public class ManagerState extends WareState {
         System.out.println(result);
     }
     
-    public void deleteSupplier() {
+    private void deleteSupplier() {
         do {
             String pId = IOHelper.getToken("Enter product id");
             Product p = warehouse.findProduct(pId);
@@ -105,7 +105,7 @@ public class ManagerState extends WareState {
         } while (true);
     }
     
-    public void showManufacturers() {
+    private void showManufacturers() {
         Iterator allManu = warehouse.getManufacturers();
         while (allManu.hasNext()) {
             Manufacturer manufacturer = (Manufacturer) (allManu.next());
@@ -113,7 +113,7 @@ public class ManagerState extends WareState {
         }
     }
     
-    public void showClients() {
+    private void showClients() {
         Iterator allMembers = warehouse.getMembers();
         while (allMembers.hasNext()) {
             Client member = (Client) (allMembers.next());
@@ -121,7 +121,7 @@ public class ManagerState extends WareState {
         }
     }
     
-    public void salesMenu()
+    private void salesMenu()
     {     
       (WareContext.instance()).changeState(WareContext.SALES_STATE); //go to sales state
     }
@@ -150,7 +150,7 @@ public class ManagerState extends WareState {
         }
     }
     
-    public void help() {
+    private void help() {
         IOHelper.Println("Enter a number between " + EXIT + " and " + HELP + " as explained below:");
         IOHelper.Println(EXIT + " to Exit\n");
         IOHelper.Println(ADD_CLIENT + " to add a client");

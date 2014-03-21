@@ -27,7 +27,7 @@ public class ClientState extends WareState {
         return instance;
     }
 
-    public void acceptOrders() {
+    private void acceptOrders() {
         String clientId = WareContext.instance().getUser();
         String productId;
         int quantity;
@@ -60,7 +60,7 @@ public class ClientState extends WareState {
         }
     }//End of acceptOrders
 
-    public void showProducts() {
+    private void showProducts() {
         Iterator allProducts = warehouse.getProducts();
         while (allProducts.hasNext()) {
             Product product = (Product) (allProducts.next());
@@ -68,7 +68,7 @@ public class ClientState extends WareState {
         }
     }
 
-    public void getClientBalance() {
+    private void getClientBalance() {
         String clientId = WareContext.instance().getUser();
         if (warehouse.findClient(clientId)) {
             //client is found so we create an order for a client
@@ -80,7 +80,7 @@ public class ClientState extends WareState {
 
     }
 
-    public void getTransactions() {
+    private void getTransactions() {
         Iterator result;
         String clientId = WareContext.instance().getUser();
         //Calendar date  = getDate("Please enter the date for which you want records as mm/dd/yy");
@@ -96,7 +96,7 @@ public class ClientState extends WareState {
         }
     }//End of getTransactions
 
-    public void help() {
+    private void help() {
         IOHelper.Println("Enter a number between " + EXIT + " and " + HELP + " as explained below:");
         IOHelper.Println(EXIT + " to Exit\n");
         IOHelper.Println(ACCEPT_ORDERS + " to accept orders from a client");

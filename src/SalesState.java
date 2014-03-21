@@ -35,7 +35,7 @@ public class SalesState extends WareState {
         return instance;
     }
 
-    public int getNumber(String prompt) {
+    private int getNumber(String prompt) {
         do {
             try {
                 String item = IOHelper.getToken(prompt);
@@ -189,7 +189,7 @@ public class SalesState extends WareState {
         }
     }
 
-    public void becomeClient() {
+    private void becomeClient() {
         String userID = IOHelper.getToken("Please input the user id: ");
         if (Warehouse.instance().findClient(userID)) {
             (WareContext.instance()).setUser(userID);
