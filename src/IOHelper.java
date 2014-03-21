@@ -18,8 +18,8 @@ public class IOHelper {
 
     private static final BufferedReader reader = new BufferedReader(new InputStreamReader(System.in));
 
-    public static final int EXIT = -1;
-    public static final int HELP = 0;
+    public static final int EXIT = 0;
+    public static final int HELP = 20;
 
     public static int readInt() {
         int returnValue = 0;

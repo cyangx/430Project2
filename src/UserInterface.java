@@ -16,7 +16,6 @@ public class UserInterface {
     private static final int ADD_SUPPLIER = 5;
     private static final int DELETE_SUPPLIER = 6;
     private static final int SUPPLIER_LIST = 7;
-
     private static final int ACCEPT_PAYMENT = 8;
     private static final int GET_BALANCE = 9;
     private static final int GET_OVERDUE = 10;
@@ -550,7 +549,10 @@ public class UserInterface {
         }
     }
 
+//This file is no longer needed.
+/* 
     public static void main(String[] s) {
         UserInterface.instance().process();
     }
-}
+*/
+    }

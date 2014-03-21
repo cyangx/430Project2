@@ -27,17 +27,17 @@ public class ManagerState extends WareState {
     private static ManagerState instance;
   
     //manager specific calls
-    private static final int EXIT = 0;
+    private static final int EXIT = IOHelper.EXIT;
     private static final int ADD_CLIENT = 1;
-    private static final int ADD_MANUFACTURER = 5;
-    private static final int DELETE_SUPPLIER = 6;
-    private static final int SHOW_MANUFACTURERS = 15;
-    private static final int SHOW_CLIENTS = 16;
-    private static final int SALES_MENU = 17;
+    private static final int ADD_MANUFACTURER = 2;
+    private static final int DELETE_SUPPLIER = 3;
+    private static final int SHOW_MANUFACTURERS = 4;
+    private static final int SHOW_CLIENTS = 5;
+    private static final int SALES_MENU = 6;
     //common calls
-    private static final int SAVE = 18;
-    private static final int RETRIEVE = 19;
-    private static final int HELP = 20;
+    private static final int SAVE = 7;
+    private static final int RETRIEVE = 8;
+    private static final int HELP = IOHelper.HELP;
     
     private ManagerState() {
         super();
@@ -52,46 +52,10 @@ public class ManagerState extends WareState {
         return instance;
     }
     
-    public String getToken(String prompt) {
-        do {
-            try {
-                System.out.println(prompt);
-                String line = reader.readLine();
-                StringTokenizer tokenizer = new StringTokenizer(line,"\n\r\f");
-                if (tokenizer.hasMoreTokens()) {
-                    return tokenizer.nextToken();
-                }
-            } catch (IOException ioe) {
-                System.exit(0);
-            }
-        } while (true);
-    }
-    
-    private boolean yesOrNo(String prompt) {
-        String more = getToken(prompt + " (Y|y)[es] or anything else for no");
-        if (more.charAt(0) != 'y' && more.charAt(0) != 'Y') {
-            return false;
-        }
-        return true;
-    }
-    
-    public int getCommand() {
-        do {
-            try {
-                int value = Integer.parseInt(getToken("Enter command:" + HELP + " for help"));
-                if (value >= EXIT && value <= HELP) {
-                    return value;
-                }
-            } catch (NumberFormatException nfe) {
-                System.out.println("Enter a number");
-            }
-        } while (true);
-    }
-    
     public void addClient() {
-        String name = getToken("Enter client name");
-        String address = getToken("Enter address");
-        String phone = getToken("Enter phone");
+        String name = IOHelper.getToken("Enter client name");
+        String address = IOHelper.getToken("Enter address");
+        String phone = IOHelper.getToken("Enter phone");
         Client result;
         result = warehouse.addMember(name, address, phone);
         if (result == null) {
@@ -101,9 +65,9 @@ public class ManagerState extends WareState {
     }
     
     public void addManufacturer() {
-        String name = getToken("Enter manufacturer name");
-        String address = getToken("Enter address");
-        String phone = getToken("Enter phone");
+        String name = IOHelper.getToken("Enter manufacturer name");
+        String address = IOHelper.getToken("Enter address");
+        String phone = IOHelper.getToken("Enter phone");
         Manufacturer result;
         result = warehouse.addManufacturer(name, address, phone);
         if (result == null) {
@@ -114,12 +78,12 @@ public class ManagerState extends WareState {
     
     public void deleteSupplier() {
         do {
-            String pId = getToken("Enter product id");
+            String pId = IOHelper.getToken("Enter product id");
             Product p = warehouse.findProduct(pId);
 
             if (p != null) {
 
-                String mId = getToken("Enter manufacturer id");
+                String mId = IOHelper.getToken("Enter manufacturer id");
                 Manufacturer m;
                 m = warehouse.findManufacturer(mId);
                 if (m != null) {
@@ -134,7 +98,7 @@ public class ManagerState extends WareState {
                 System.out.println("Product not found.");
             }
 
-            if (!yesOrNo("Try again?")) {
+            if (!IOHelper.yesOrNo("Try again?")) {
                 break;
             }
 
@@ -187,17 +151,17 @@ public class ManagerState extends WareState {
     }
     
     public void help() {
-        System.out.println("Enter a number between 0 and 12 as explained below:");
-        System.out.println(EXIT + " to Exit\n");
-        System.out.println(ADD_CLIENT + " to add a client");
-        System.out.println(ADD_MANUFACTURER + " to add manufacturer");
-        System.out.println(DELETE_SUPPLIER + " to delete supplier");
-        System.out.println(SHOW_MANUFACTURERS + " to  display all manufacturers");
-        System.out.println(SHOW_CLIENTS + " to  display all clients");
-        System.out.println(SALES_MENU + " to  switch to the Sales Person menu");
-        System.out.println(SAVE + " to  save the data");
-        System.out.println(RETRIEVE + " to retreive the stored data");
-        System.out.println(HELP + " for help");
+        IOHelper.Println("Enter a number between " + EXIT + " and " + HELP + " as explained below:");
+        IOHelper.Println(EXIT + " to Exit\n");
+        IOHelper.Println(ADD_CLIENT + " to add a client");
+        IOHelper.Println(ADD_MANUFACTURER + " to add manufacturer");
+        IOHelper.Println(DELETE_SUPPLIER + " to delete supplier");
+        IOHelper.Println(SHOW_MANUFACTURERS + " to  display all manufacturers");
+        IOHelper.Println(SHOW_CLIENTS + " to  display all clients");
+        IOHelper.Println(SALES_MENU + " to  switch to the Sales Person menu");
+        IOHelper.Println(SAVE + " to  save the data");
+        IOHelper.Println(RETRIEVE + " to retreive the stored data");
+        IOHelper.Println(HELP + " for help");
     }
     
     public void logout()
@@ -208,7 +172,7 @@ public class ManagerState extends WareState {
     public void process() {
         int command;
         help();
-        while ((command = getCommand()) != EXIT) {
+        while ((command = IOHelper.GetCmd()) != EXIT) {
             switch (command) {
                 case ADD_CLIENT: addClient();
                                 break;

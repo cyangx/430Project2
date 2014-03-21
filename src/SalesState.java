@@ -7,11 +7,10 @@ import java.util.*;
  */
 public class SalesState extends WareState {
 
-    
     private static Warehouse warehouse;
     private WareContext context;
     private static SalesState instance;
-
+    
     private static final int EXIT = IOHelper.EXIT;
     private static final int ADD_PRODUCT = 1;
     private static final int ACCEPT_PAYMENT = 2;
@@ -49,7 +48,7 @@ public class SalesState extends WareState {
     }
 
     private void help() {
-        IOHelper.Println("Enter a number between 0 and 12 as explained below:");
+        IOHelper.Println("Enter a number between " + EXIT + " and " + HELP + " as explained below:");
         IOHelper.Println(EXIT + " to Exit\n");
         IOHelper.Println(ADD_PRODUCT + " to add a product");
         IOHelper.Println(ACCEPT_PAYMENT + " to accept client payment");
@@ -190,16 +189,22 @@ public class SalesState extends WareState {
         }
     }
 
-    private void becomeClient() {
-        (WareContext.instance()).changeState(WareContext.CLIENT_STATE); //go to sales state
+    public void becomeClient() {
+        String userID = IOHelper.getToken("Please input the user id: ");
+        if (Warehouse.instance().findClient(userID)) {
+            (WareContext.instance()).setUser(userID);
+            (WareContext.instance()).changeState(WareContext.CLIENT_STATE); //go to sales state
+        } else {
+            System.out.println("Invalid user id.");
+        }
     }
 
     /**
-     * If we are a manager, logout of sales and return to manager
-     * else we logout and go to the main login menu
+     * If we are a manager, logout of sales and return to manager else we logout
+     * and go to the main login menu
      */
     private void logout() {
-        if ((WareContext.instance()).getLogin() == WareContext.IsManager) { 
+        if ((WareContext.instance()).getLogin() == WareContext.IsManager) {
             (WareContext.instance()).changeState(WareContext.MANAGER_STATE);
         } else {
             (WareContext.instance()).changeState(WareContext.LOGIN_STATE);

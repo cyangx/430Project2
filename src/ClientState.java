@@ -1,5 +1,5 @@
+
 import java.util.*;
-import java.text.*;
 import java.io.*;
 
 public class ClientState extends WareState {
@@ -8,12 +8,12 @@ public class ClientState extends WareState {
     private static Warehouse warehouse;
     private WareContext context;
     private static ClientState instance;
-    private static final int EXIT = 0;
-    private static final int ACCEPT_ORDERS = 4;
-    private static final int GET_BALANCE = 9;
-    private static final int GET_TRANSACTIONS = 14;
-    private static final int SHOW_PRODUCTS = 17;
-    private static final int HELP = 20;
+    private static final int EXIT = IOHelper.EXIT;
+    private static final int ACCEPT_ORDERS = 1;
+    private static final int GET_BALANCE = 2;
+    private static final int GET_TRANSACTIONS = 3;
+    private static final int SHOW_PRODUCTS = 4;
+    private static final int HELP = IOHelper.HELP;
 
     private ClientState() {
         super();
@@ -27,68 +27,6 @@ public class ClientState extends WareState {
         return instance;
     }
 
-    public String getToken(String prompt) {
-        do {
-            try {
-                System.out.println(prompt);
-                String line = reader.readLine();
-                StringTokenizer tokenizer = new StringTokenizer(line, "\n\r\f");
-                if (tokenizer.hasMoreTokens()) {
-                    return tokenizer.nextToken();
-                }
-            } catch (IOException ioe) {
-                System.exit(0);
-            }
-        } while (true);
-    }
-
-    private boolean yesOrNo(String prompt) {
-        String more = getToken(prompt + " (Y|y)[es] or anything else for no");
-        if (more.charAt(0) != 'y' && more.charAt(0) != 'Y') {
-            return false;
-        }
-        return true;
-    }
-
-    public int getNumber(String prompt) {
-        do {
-            try {
-                String item = getToken(prompt);
-                Integer num = Integer.valueOf(item);
-                return num.intValue();
-            } catch (NumberFormatException nfe) {
-                System.out.println("Please input a number ");
-            }
-        } while (true);
-    }
-
-    public Calendar getDate(String prompt) {
-        do {
-            try {
-                Calendar date = new GregorianCalendar();
-                String item = getToken(prompt);
-                DateFormat df = SimpleDateFormat.getDateInstance(DateFormat.SHORT);
-                date.setTime(df.parse(item));
-                return date;
-            } catch (Exception fe) {
-                System.out.println("Please input a date as mm/dd/yy");
-            }
-        } while (true);
-    }
-
-    public int getCommand() {
-        do {
-            try {
-                int value = Integer.parseInt(getToken("Enter command:" + HELP + " for help"));
-                if (value >= EXIT && value <= HELP) {
-                    return value;
-                }
-            } catch (NumberFormatException nfe) {
-                System.out.println("Enter a number");
-            }
-        } while (true);
-    }
-
     public void acceptOrders() {
         String clientId = WareContext.instance().getUser();
         String productId;
@@ -99,19 +37,19 @@ public class ClientState extends WareState {
             //client is found so we create an order for a client
             warehouse.createOrder(clientId);
             do {
-                productId = getToken("Enter product Id");
+                productId = IOHelper.getToken("Enter product Id");
                 Product tempProduct = warehouse.findProduct(productId);
 
                 if (tempProduct == null) {
                     System.out.println("Product Not found.");
 
                 } else {
-                    quantity = Integer.parseInt(getToken("Enter quantity"));
+                    quantity = Integer.parseInt(IOHelper.getToken("Enter quantity"));
                     warehouse.addToOrder(clientId, productId, quantity);
                     warehouse.updateClientBalance(clientId, tempProduct.getPrice() * quantity);
                     amount += (tempProduct.getPrice() * quantity);
                 }
-            } while (yesOrNo("Add more items?"));
+            } while (IOHelper.yesOrNo("Add more items?"));
             // after order is done we need to add it to the order list
 
             warehouse.addToOrderList();
@@ -159,23 +97,37 @@ public class ClientState extends WareState {
     }//End of getTransactions
 
     public void help() {
-        System.out.println("Enter a number between 0 and 20 as explained below:");
-        System.out.println(EXIT + " to Exit\n");
-        System.out.println(ACCEPT_ORDERS + " to accept orders from a client");
-        System.out.println(GET_BALANCE + " to get a client balance ");
-        System.out.println(GET_TRANSACTIONS + " to show transaction list of a client");
-        System.out.println(SHOW_PRODUCTS + " to  print products");
-        System.out.println(HELP + " for help");
+        IOHelper.Println("Enter a number between " + EXIT + " and " + HELP + " as explained below:");
+        IOHelper.Println(EXIT + " to Exit\n");
+        IOHelper.Println(ACCEPT_ORDERS + " to accept orders from a client");
+        IOHelper.Println(GET_BALANCE + " to get a client balance ");
+        IOHelper.Println(GET_TRANSACTIONS + " to show transaction list of a client");
+        IOHelper.Println(SHOW_PRODUCTS + " to  print products");
+        IOHelper.Println(HELP + " for help");
     }
 
     public void logout() {
-        (WareContext.instance()).changeState(0); // exit with a code 0
+        if ((WareContext.instance()).getLogin() == WareContext.IsManager) {
+            System.out.println(" going to sales \n ");
+            (WareContext.instance()).changeState(WareContext.SALES_STATE); // exit with a code 1
+            
+        } else if (WareContext.instance().getLogin() == WareContext.IsSales) {
+            System.out.println(" going to sales \n");
+            (WareContext.instance()).changeState(WareContext.SALES_STATE); // exit with a code 2
+            
+        } else if (WareContext.instance().getLogin() == WareContext.IsClient) {
+            System.out.println(" going to login \n");
+            (WareContext.instance()).changeState(WareContext.LOGIN_STATE); 
+            
+        } else {
+            (WareContext.instance()).changeState(WareContext.CLIENT_STATE); // exit code 2, indicates error
+        }
     }
 
     public void process() {
         int command;
         help();
-        while ((command = getCommand()) != EXIT) {
+        while ((command = IOHelper.GetCmd()) != EXIT) {
             switch (command) {
                 case ACCEPT_ORDERS:
                     acceptOrders();
