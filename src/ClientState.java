@@ -97,6 +97,7 @@ public class ClientState extends WareState {
     }//End of getTransactions
 
     private void help() {
+        IOHelper.Println("Client Menu");
         IOHelper.Println("Enter a number between " + EXIT + " and " + HELP + " as explained below:");
         IOHelper.Println(EXIT + " to Exit\n");
         IOHelper.Println(ACCEPT_ORDERS + " to accept orders from a client");

@@ -148,6 +148,7 @@ public class ManagerState extends WareState {
     }
     
     private void help() {
+        IOHelper.Println("Manager Menu");
         IOHelper.Println("Enter a number between " + EXIT + " and " + HELP + " as explained below:");
         IOHelper.Println(EXIT + " to Exit\n");
         IOHelper.Println(ADD_CLIENT + " to add a client");
@@ -161,7 +162,7 @@ public class ManagerState extends WareState {
     
     public void logout()
     {
-        (WareContext.instance()).changeState(WareContext.MANAGER_STATE); // exit
+        (WareContext.instance()).changeState(WareContext.LOGIN_STATE); // exit
     }
     
     public void process() {

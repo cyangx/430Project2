@@ -1,8 +1,16 @@
 
-import java.util.*;
+import java.awt.FlowLayout;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
 import java.io.*;
+import java.util.*;
+import javax.swing.JButton;
+import javax.swing.JFrame;
+import javax.swing.JOptionPane;
+import javax.swing.JPasswordField;
 
-public class Loginstate extends WareState {
+public class Loginstate extends WareState implements ActionListener {
+
     private static final int MANAGER_LOGIN = 0;
     private static final int CLERK_LOGIN = 1;
     private static final int CLIENT_LOGIN = 2;
@@ -11,10 +19,40 @@ public class Loginstate extends WareState {
     private BufferedReader reader = new BufferedReader(new InputStreamReader(System.in));
     private WareContext context;
     private static Loginstate instance;
-    
+
+    private JButton clientButton, salesButton, managerButton;
+
+    private JFrame loginFrame;
+
     private Loginstate() {
         super();
+
+        salesButton = new JButton("Sales Clerk");
+        salesButton.addActionListener(this);
+        clientButton = new JButton("Client");
+        clientButton.addActionListener(this);
+        managerButton = new JButton("Manager");
+        managerButton.addActionListener(this);
+
+//userButton.addActionListener(this);
+        //logoutButton.addActionListener(this);
+        //ClerkButton.instance().setListener();
         // context = WareContext.instance();
+    }
+
+    public void actionPerformed(ActionEvent event) {
+
+        if (event.getSource().equals(this.clientButton)) {
+
+            //WareContext.instance().changeState(WareContext.CLIENT_STATE);
+            client();
+        } else if (event.getSource().equals(this.salesButton)) {
+            //WareContext.instance().changeState(WareContext.SALES_STATE);
+            sales();
+        } else if (event.getSource().equals(this.managerButton)) {
+            //WareContext.instance().changeState(WareContext.MANAGER_STATE);
+            manager();
+        }
     }
 
     public static Loginstate instance() {
@@ -61,36 +99,70 @@ public class Loginstate extends WareState {
     }
 
     private void manager() {
-        String managerID = getToken("Please input the manager id: ");
+        /*String managerID = getToken("Please input the manager id: ");
         String password = getToken("Please input the manager password: ");
         if (security.verifyPassword(managerID, password, 0) == true) {
             (WareContext.instance()).setLogin(WareContext.IsManager);
-            (WareContext.instance()).changeState(0);
-        }
+            (WareContext.instance()).changeState(WareContext.MANAGER_STATE);
+        } else {
+            System.out.println("not the same");
+        }*/
 
+        String userID = JOptionPane.showInputDialog(
+                loginFrame, "Please input sales username: ");
+
+        String password = JOptionPane.showInputDialog(loginFrame,
+                "Enter Password");
+
+        if (security.verifyPassword(userID, password, WareContext.MANAGER_STATE)) {
+            IOHelper.Println("dummy message1");
+            JOptionPane.showMessageDialog(loginFrame, "Successful, look at console");
+            (WareContext.instance()).setLogin(WareContext.IsManager);
+            (WareContext.instance()).changeState(WareContext.MANAGER_STATE);
+            IOHelper.Println("dummy message2");
+
+        } else {
+            JOptionPane.showMessageDialog(loginFrame, "Incorrect Password");
+        }
     }
 
-    private void clerk() {
-        String clerkID = getToken("Please input the salesclerk id: ");
-        String password = getToken("Please input the salesclerk password: ");
-        if (security.verifyPassword(clerkID, password, 1) == true) {
-            System.out.println("Password verified. Continuing.");
+    private void sales() {
+        String userID = JOptionPane.showInputDialog(
+                loginFrame, "Please input sales username: ");
+
+        String password = JOptionPane.showInputDialog(loginFrame,
+                "Enter Password");
+
+        if (security.verifyPassword(userID, password, WareContext.SALES_STATE)) {
+            IOHelper.Println("dummy message1");
+            JOptionPane.showMessageDialog(loginFrame, "Successful, look at console");
             (WareContext.instance()).setLogin(WareContext.IsSales);
-            (WareContext.instance()).changeState(1);
+            (WareContext.instance()).changeState(WareContext.SALES_STATE);
+            IOHelper.Println("dummy message2");
+
+        } else {
+            JOptionPane.showMessageDialog(loginFrame, "Incorrect Password");
         }
     }
 
     private void client() {
-        String userID = getToken("Please input the client id: ");
-        String password = getToken("Please input the client password: ");
+        String userID = JOptionPane.showInputDialog(
+                loginFrame, "Please input the user id: ");
         if (Warehouse.instance().findClient(userID) == true) {
-            if(security.verifyPassword(userID,password,2) == true){
-            (WareContext.instance()).setLogin(WareContext.IsClient);
-            (WareContext.instance()).setUser(userID);
-            (WareContext.instance()).changeState(2);
+            String password = JOptionPane.showInputDialog(loginFrame,
+                    "Enter Password");
+            if (security.verifyPassword(userID, password, WareContext.CLIENT_STATE)) {
+                JOptionPane.showMessageDialog(loginFrame, "Successful, look at console");
+                (WareContext.instance()).setLogin(WareContext.IsClient);
+                (WareContext.instance()).setUser(userID);
+                (WareContext.instance()).changeState(WareContext.CLIENT_STATE);
+
+                
+            } else {
+                JOptionPane.showMessageDialog(loginFrame, "Incorrect Password");
             }
         } else {
-            System.out.println("Invalid user id.");
+            JOptionPane.showMessageDialog(loginFrame, "Invalid user id.");
         }
     }
 
@@ -111,7 +183,7 @@ public class Loginstate extends WareState {
                     manager();
                     break;
                 case CLERK_LOGIN:
-                    clerk();
+                    sales();
                     break;
                 case CLIENT_LOGIN:
                     client();
@@ -133,6 +205,16 @@ public class Loginstate extends WareState {
     }
 
     public void run() {
-        process();
+        //process();
+        System.out.println("here");
+        loginFrame = WareContext.instance().getFrame();
+        loginFrame.getContentPane().removeAll();
+        loginFrame.getContentPane().setLayout(new FlowLayout());
+        loginFrame.getContentPane().add(this.clientButton);
+        loginFrame.getContentPane().add(this.salesButton);
+        loginFrame.getContentPane().add(this.managerButton);
+        loginFrame.setVisible(true);
+        loginFrame.paint(loginFrame.getGraphics());
+
     }
 }

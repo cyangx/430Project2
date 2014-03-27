@@ -49,6 +49,7 @@ public class SalesState extends WareState {
     }
 
     private void help() {
+        IOHelper.Println("Sales State");
         IOHelper.Println("Enter a number between " + EXIT + " and " + HELP + " as explained below:");
         IOHelper.Println(EXIT + " to Exit\n");
         IOHelper.Println(ADD_PRODUCT + " to add a product");
