@@ -8,11 +8,16 @@
  * @author Anil
  */
 
-import java.util.*;
-import java.text.*;
+import java.awt.Container;
+import java.awt.FlowLayout;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
 import java.io.*;
+import java.util.*;
+import javax.swing.JButton;
+import javax.swing.JFrame;
 
-public class ManagerState extends WareState {
+public class ManagerState extends WareState implements ActionListener {
  // TODO:
  // Become sales
     // Print clients
@@ -36,10 +41,16 @@ public class ManagerState extends WareState {
     private static final int SALES_MENU = 6;
     private static final int HELP = IOHelper.HELP;
     
+    private JFrame managerFrame;
+    
+    private JButton logoutButton;
+    
     private ManagerState() {
         super();
         warehouse = Warehouse.instance();
-        //context = WareContext.instance();
+        
+        logoutButton = new JButton("Logout");
+        logoutButton.addActionListener(this);
     }
 
     public static ManagerState instance() {
@@ -189,7 +200,22 @@ public class ManagerState extends WareState {
         logout();
     }
     
+    public void actionPerformed(ActionEvent event) {
+        if (event.getSource().equals(this.logoutButton)) {
+            logout();
+        }
+    }
+    
     public void run() {
-        process();
+        //process();
+        managerFrame = WareContext.instance().getFrame();
+        Container pane = managerFrame.getContentPane();
+        pane.removeAll();
+        pane.setLayout(new FlowLayout());
+        pane.add(this.logoutButton);
+        // TODO: add other buttons and items here
+        
+        managerFrame.setVisible(true);
+        managerFrame.paint(managerFrame.getGraphics());
     }
 }

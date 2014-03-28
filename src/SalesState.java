@@ -1,11 +1,20 @@
 
+import java.awt.Container;
+import java.awt.Dimension;
+import java.awt.FlowLayout;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
 import java.util.*;
+import javax.swing.JButton;
+import javax.swing.JFrame;
+import javax.swing.JOptionPane;
+import javax.swing.JTextField;
 
 /**
  *
  * @author Eric Dorphy
  */
-public class SalesState extends WareState {
+public class SalesState extends WareState implements ActionListener{
 
     private static Warehouse warehouse;
     private WareContext context;
@@ -23,9 +32,19 @@ public class SalesState extends WareState {
     private static final int BECOME_CLIENT = 9;
     private static final int HELP = IOHelper.HELP;
 
+    private JFrame salesFrame;
+    private JButton logoutButton;
+    private JTextField textField;
+    
     private SalesState() {
         super();
         warehouse = Warehouse.instance();
+        logoutButton = new JButton("Logout");
+        logoutButton.addActionListener(this);
+        
+        textField = new JTextField();
+        textField.setPreferredSize(new Dimension(100, 30));
+        textField.addActionListener(this);
         //context = LibContext.instance();
     }
 
@@ -285,8 +304,26 @@ public class SalesState extends WareState {
         }
         logout();
     }
+    
+    public void actionPerformed(ActionEvent event) {
+        if (event.getSource().equals(this.logoutButton)) {
+            logout();
+        } else if(event.getSource().equals(this.textField)) {
+            JOptionPane.showMessageDialog(salesFrame,"You entered: " + textField.getText());
+        }
+    }
 
     public void run() {
-        process();
+        //process();
+        salesFrame = WareContext.instance().getFrame();
+        Container pane = salesFrame.getContentPane();
+        pane.removeAll();
+        pane.setLayout(new FlowLayout());
+        pane.add(this.textField);
+        pane.add(this.logoutButton);
+        // TODO: add other buttons and items here
+        
+        salesFrame.setVisible(true);
+        salesFrame.paint(salesFrame.getGraphics());
     }
 }

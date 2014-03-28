@@ -1,8 +1,14 @@
 
-import java.util.*;
+import java.awt.Container;
+import java.awt.FlowLayout;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
 import java.io.*;
+import java.util.*;
+import javax.swing.JButton;
+import javax.swing.JFrame;
 
-public class ClientState extends WareState {
+public class ClientState extends WareState implements ActionListener{
 
     private BufferedReader reader = new BufferedReader(new InputStreamReader(System.in));
     private static Warehouse warehouse;
@@ -14,10 +20,17 @@ public class ClientState extends WareState {
     private static final int GET_TRANSACTIONS = 3;
     private static final int SHOW_PRODUCTS = 4;
     private static final int HELP = IOHelper.HELP;
+    
+    private JFrame clientFrame;
+    private JButton logoutButton;
 
     private ClientState() {
         super();
         warehouse = Warehouse.instance();
+        
+        logoutButton = new JButton("Logout");
+        logoutButton.addActionListener(this);
+        
     }
 
     public static ClientState instance() {
@@ -149,8 +162,23 @@ public class ClientState extends WareState {
         }
         logout();
     }
+    
+    public void actionPerformed(ActionEvent event) {
+        if (event.getSource().equals(this.logoutButton)) {
+            logout();
+        }
+    }
 
     public void run() {
-        process();
+        //process();
+        clientFrame = WareContext.instance().getFrame();
+        Container pane = clientFrame.getContentPane();
+        pane.removeAll();
+        pane.setLayout(new FlowLayout());
+        pane.add(this.logoutButton);
+        // TODO: add other buttons and items here
+        
+        clientFrame.setVisible(true);
+        clientFrame.paint(clientFrame.getGraphics());
     }
 }
