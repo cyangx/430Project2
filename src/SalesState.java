@@ -5,10 +5,16 @@ import java.awt.FlowLayout;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.util.*;
+import java.awt.*;
+import javax.swing.*;
+import java.awt.event.*;
+
+import javafx.scene.paint.Color;
 import javax.swing.JButton;
 import javax.swing.JFrame;
 import javax.swing.JOptionPane;
 import javax.swing.JTextField;
+import javax.swing.JPanel;
 
 /**
  *
@@ -33,18 +39,67 @@ public class SalesState extends WareState implements ActionListener{
     private static final int HELP = IOHelper.HELP;
 
     private JFrame salesFrame;
+    
+    private JPanel addProduct;
+    
+    
+    private JButton addProductButton;
+    private JButton acceptPaymentButton;
+    private JButton getOverdueBalanceButton;
+    private JButton showWaitlistButton;
+    private JButton acceptShipmentButton;
+    private JButton showProductsButton;
+    private JButton addSupplierButton;
+    private JButton getProductSuppliersButton;
+    private JButton backButton;
+    private JButton confirmButton;
+    
     private JButton logoutButton;
-    private JTextField textField;
+    private JTextField textField, textField2, textField3, textField4;
+    
+    private boolean confirmClick = false;
     
     private SalesState() {
         super();
         warehouse = Warehouse.instance();
+        
+        addProductButton = new JButton("Add Product");
+        addProductButton.addActionListener(this);
+        acceptPaymentButton = new JButton("Accept Payment");
+        acceptPaymentButton.addActionListener(this);
+        getOverdueBalanceButton = new JButton("Get Overdue Balance");
+        getOverdueBalanceButton.addActionListener(this);
+        showWaitlistButton = new JButton("Show Waitlist");
+        showWaitlistButton.addActionListener(this);
+        acceptShipmentButton = new JButton("Accept Shipment");
+        acceptShipmentButton.addActionListener(this);
+        showProductsButton = new JButton("Show Product List");
+        showProductsButton.addActionListener(this);
+        addSupplierButton = new JButton("Add Supplier");
+        addSupplierButton.addActionListener(this);
+        getProductSuppliersButton = new JButton("Get Product Suppliers");
+        getProductSuppliersButton.addActionListener(this);
+        confirmButton = new JButton("Confirm");
+        confirmButton.addActionListener(this);
+        
+        backButton = new JButton("Back");
+        backButton.addActionListener(this);
+        
         logoutButton = new JButton("Logout");
         logoutButton.addActionListener(this);
         
         textField = new JTextField();
         textField.setPreferredSize(new Dimension(100, 30));
         textField.addActionListener(this);
+        textField2 = new JTextField();
+        textField2.setPreferredSize(new Dimension(100, 30));
+        textField2.addActionListener(this);
+        textField3 = new JTextField();
+        textField3.setPreferredSize(new Dimension(100, 30));
+        textField3.addActionListener(this);
+        textField4 = new JTextField();
+        textField4.setPreferredSize(new Dimension(100, 30));
+        textField4.addActionListener(this);
         //context = LibContext.instance();
     }
 
@@ -85,9 +140,95 @@ public class SalesState extends WareState implements ActionListener{
 
     private void addProducts() {
         Product result;
-        double price;
-        int quantity;
+        Container pane = salesFrame.getContentPane();
+        boolean breakLoop = false;
+        //JButton confirmButton;
+        //confirmButton = new JButton("Confirm");
+        //confirmButton.addActionListener(this);
+        
 
+
+        JLabel t1, p1, pr1, q1;
+        t1 = new JLabel("Product Name: ");
+        p1 = new JLabel("Product ID: ");
+        pr1 = new JLabel("Price: ");
+        q1 = new JLabel("Quantity: ");
+        
+        pane.removeAll();
+        pane.setLayout(new FlowLayout());
+        pane.add(t1);
+        pane.add(this.textField);
+        pane.add(p1);
+        pane.add(this.textField2);
+        pane.add(pr1);
+        pane.add(this.textField3);
+        pane.add(q1);
+        pane.add(this.textField4);
+        pane.add(confirmButton);
+        pane.add(this.backButton);
+        
+        
+        salesFrame.setVisible(true);
+        salesFrame.repaint();
+        
+        String data = textField.getText();
+        String data2 = textField2.getText();
+        String data3 = textField3.getText();
+        String data4 = textField4.getText();
+        
+        /* Debug if statement. Doesn't work.*/
+        if(confirmClick == true){
+            System.out.println("Click!");
+            confirmClick = false;   
+        }
+        
+        
+        //salesFrame.paint(salesFrame.getGraphics());
+        //addProduct.updateUI();
+        
+        //double price;
+        //int quantity;
+        //GUI version -- Via pop up boxes
+        
+        /* Example
+        
+            private void client() {
+        String userID = JOptionPane.showInputDialog(loginFrame, "Please input the user id: ");
+        if (Warehouse.instance().findClient(userID) == true) {
+            String password = JOptionPane.showInputDialog(loginFrame, "Enter Password");
+            if (security.verifyPassword(userID, password, WareContext.CLIENT_STATE)) {                
+                (WareContext.instance()).setLogin(WareContext.IsClient);
+                (WareContext.instance()).setUser(userID);
+                (WareContext.instance()).changeState(WareContext.CLIENT_STATE);
+            } else {
+                JOptionPane.showMessageDialog(loginFrame, "Incorrect Password");
+            }
+        } else {
+            JOptionPane.showMessageDialog(loginFrame, "Invalid user id.");
+        }
+    }*/
+        /*
+        do{
+            
+            String title = JOptionPane.showInputDialog(salesFrame, "Enter  product name: ");
+            String productID = JOptionPane.showInputDialog(salesFrame, "Enter id: ");
+            double price = new Double(JOptionPane.showInputDialog(salesFrame, "Enter Price: "));
+            int quantity = new Integer(JOptionPane.showInputDialog(salesFrame, "Enter Quantity: "));
+            
+            result = warehouse.addProduct(title, productID, price, quantity);
+        
+            if(result != null){
+                JOptionPane.showMessageDialog(salesFrame,result);
+            }
+            else{
+                JOptionPane.showMessageDialog(salesFrame, "Product could not be added.");
+            }
+            int reply = JOptionPane.showConfirmDialog(salesFrame, "Add another product?");
+            if(reply == JOptionPane.NO_OPTION)
+                break;
+        } while (true);//End of do while*/
+        
+        /*//Console Version
         do {
             String title = IOHelper.getToken("Enter  product name: ");
             String productID = IOHelper.getToken("Enter id: ");
@@ -105,7 +246,7 @@ public class SalesState extends WareState implements ActionListener{
                 break;
             }
 
-        } while (true);
+        } while (true);*/
     }//End addProducts
 
     private void acceptPayment() {
@@ -308,8 +449,18 @@ public class SalesState extends WareState implements ActionListener{
     public void actionPerformed(ActionEvent event) {
         if (event.getSource().equals(this.logoutButton)) {
             logout();
-        } else if(event.getSource().equals(this.textField)) {
+        }
+        else if(event.getSource().equals(this.addProductButton)){
+            addProducts();
+        }
+        else if(event.getSource().equals(this.backButton)){
+            run();
+        }
+        else if(event.getSource().equals(this.textField)) {
             JOptionPane.showMessageDialog(salesFrame,"You entered: " + textField.getText());
+        }
+        else if(event.getSource().equals(this.confirmButton)){
+            confirmClick = true;
         }
     }
 
@@ -319,7 +470,15 @@ public class SalesState extends WareState implements ActionListener{
         Container pane = salesFrame.getContentPane();
         pane.removeAll();
         pane.setLayout(new FlowLayout());
-        pane.add(this.textField);
+        pane.add(this.addProductButton);
+        pane.add(this.acceptPaymentButton);
+        pane.add(this.getOverdueBalanceButton);
+        pane.add(this.showWaitlistButton);
+        pane.add(this.acceptShipmentButton);
+        pane.add(this.showProductsButton);
+        pane.add(this.addSupplierButton);
+        pane.add(this.getProductSuppliersButton);
+        //pane.add(this.textField);
         pane.add(this.logoutButton);
         // TODO: add other buttons and items here
         
