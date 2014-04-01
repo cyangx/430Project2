@@ -1,15 +1,10 @@
 
 import java.awt.Container;
-import java.awt.Dimension;
 import java.awt.FlowLayout;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.util.*;
 import java.awt.*;
-
-import javax.swing.*;
-import java.awt.event.*;
-
 import javax.swing.JButton;
 import javax.swing.JFrame;
 import javax.swing.JOptionPane;
@@ -58,11 +53,11 @@ public class SalesState extends WareState implements ActionListener {
 
     private AddProductPanel addProductPanel;
     private ShowProductsPanel showProductsPanel;
+    private AcceptShipmentPanel acceptShipmentPanel;
+    private AddSupplierPanel addSupplierPanel;
 
     //private JPanel addProductPanel;
     private JButton logoutButton;
-    private JTextField textField, textField2, textField3, textField4;
-    private String data1, data2, data3, data4;
 
     private boolean confirmClick = false;
 
@@ -100,24 +95,12 @@ public class SalesState extends WareState implements ActionListener {
 
         addProductPanel = new AddProductPanel();
         showProductsPanel = new ShowProductsPanel();
+        addSupplierPanel = new AddSupplierPanel();
+        acceptShipmentPanel = new AcceptShipmentPanel();
 
         cards = new JPanel();
         //cards.add(addProductPanel);
         //cards.add(showProductsPanel);
-
-        /*textField = new JTextField();
-         textField.setPreferredSize(new Dimension(100, 30));
-         textField.addActionListener(this);
-         textField2 = new JTextField();
-         textField2.setPreferredSize(new Dimension(100, 30));
-         textField2.addActionListener(this);
-         textField3 = new JTextField();
-         textField3.setPreferredSize(new Dimension(100, 30));
-         textField3.addActionListener(this);
-         textField4 = new JTextField();
-         textField4.setPreferredSize(new Dimension(100, 30));
-         textField4.addActionListener(this);*/
-        //context = LibContext.instance();
     }
 
     public static SalesState instance() {
@@ -155,7 +138,7 @@ public class SalesState extends WareState implements ActionListener {
         IOHelper.Println(HELP + " for help");
     }
 
-    private void addProducts() {
+    public void addProducts() {
         Product result = null;
 
         do {
@@ -201,6 +184,26 @@ public class SalesState extends WareState implements ActionListener {
          } while (true);*/
     }//End addProducts
 
+    public boolean addProduct(String title, String productID, int quantity, double price) {
+       Product result;
+
+       if(title.equals("") || productID.equals("") || quantity == 0 || price == 0){
+           JOptionPane.showMessageDialog(salesFrame, "Product could not be added.");
+           return false;
+       }
+
+       result = warehouse.addProduct(title, productID, price, quantity);
+
+
+       if (result != null) {
+           JOptionPane.showMessageDialog(salesFrame, result);
+       } else {
+           JOptionPane.showMessageDialog(salesFrame, "Product could not be added.");
+           return false;
+       }
+       return true;
+   }//End addProducts
+    
     private void acceptPayment() {
         double balance, payment;
         do {
@@ -376,7 +379,9 @@ public class SalesState extends WareState implements ActionListener {
             Product product = (Product) (allProducts.next());
             prodList = prodList + product.toString() + "\n";
         }
-        JOptionPane.showMessageDialog(salesFrame, "Product list: \n" + prodList);
+        showProductsPanel.outputBox.setText("Product list: \n" + prodList);
+        
+        //JOptionPane.showMessageDialog(salesFrame, "Product list: \n" + prodList);
 
     }
 
@@ -546,13 +551,17 @@ public class SalesState extends WareState implements ActionListener {
         logout();
     }
 
+    private void refreshGUI(JPanel showPanel) {
+        cards.removeAll();
+        cards.add(showPanel);
+        salesFrame.validate();
+    }
+    
     public void actionPerformed(ActionEvent event) {
         if (event.getSource().equals(this.logoutButton)) {
             logout();
         } else if (event.getSource().equals(this.addProductButton)) {
-            cards.removeAll();
-            cards.add(addProductPanel);
-            salesFrame.validate();
+            refreshGUI(addProductPanel);
         } else if (event.getSource().equals(this.acceptPaymentButton)) {
             acceptPayment();
         } else if (event.getSource().equals(this.backButton)) {
@@ -560,16 +569,14 @@ public class SalesState extends WareState implements ActionListener {
         } else if (event.getSource().equals(this.getOverdueBalanceButton)) {
             getOverdueBalance();
         } else if (event.getSource().equals(this.acceptShipmentButton)) {
-            acceptShipment();
+            refreshGUI(acceptShipmentPanel);
         } else if (event.getSource().equals(this.switchToClientButton)) {
             becomeClient();
         } else if (event.getSource().equals(this.addSupplierButton)) {
-            addSupplier();
+            refreshGUI(addSupplierPanel);
         } else if (event.getSource().equals(this.showProductsButton)) {
-            cards.removeAll();
-            cards.add(showProductsPanel);
-            salesFrame.validate();
-            //showProducts();
+            refreshGUI(showProductsPanel);  
+            showProducts();
         } else if (event.getSource().equals(this.showWaitlistButton)) {
             showWaitlist();
         } else if (event.getSource().equals(this.getProductSuppliersButton)) {
@@ -597,14 +604,14 @@ public class SalesState extends WareState implements ActionListener {
         //pane.add(this.acceptPaymentButton);
         //pane.add(this.getOverdueBalanceButton);
         //pane.add(this.showWaitlistButton);
-        //pane.add(this.acceptShipmentButton);
+        pane.add(this.acceptShipmentButton);
         pane.add(this.showProductsButton);
-        //pane.add(this.addSupplierButton);
+        pane.add(this.addSupplierButton);
         //pane.add(this.getProductSuppliersButton);
         //pane.add(this.switchToClientButton);
 
         //pane.add(this.textField);
-        //pane.add(this.logoutButton);
+        pane.add(this.logoutButton);
         // TODO: add other buttons and items here
         pane.add(cards, BorderLayout.CENTER);
 
