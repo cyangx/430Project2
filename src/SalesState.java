@@ -204,18 +204,14 @@ public class SalesState extends WareState implements ActionListener {
        return true;
    }//End addProducts
     
-    private void acceptPayment() {
-        double balance, payment;
-        do {
-            String clientID = JOptionPane.showInputDialog(salesFrame, "Enter client ID: ");
+    public boolean acceptPayment(String clientID, double payment) {
+        double balance;
+        
             if (warehouse.findClient(clientID)) {
                 //client is found so we accept a payment from a client
 
                 balance = warehouse.getClientBalance(clientID);
-                //IOHelper.Println("This client's balance is: " + balance);
-
-                payment = Double.parseDouble(JOptionPane.showInputDialog("The client's balance is: "
-                        + balance + "\nEnter payment amount: "));
+                
                 warehouse.updateClientBalance(clientID, -payment);
 
                 balance = warehouse.getClientBalance(clientID);
@@ -224,32 +220,21 @@ public class SalesState extends WareState implements ActionListener {
 
             } else {
                 JOptionPane.showMessageDialog(salesFrame, "Client not found.");
-            }
-            int reply = JOptionPane.showConfirmDialog(salesFrame, "Accept a payment from another client?");
-            if (reply == JOptionPane.NO_OPTION || reply == JOptionPane.CANCEL_OPTION) {
-                break;
-            }
-        } while (true);//End of do while loop
-            /*//Console version
-         String clientID = IOHelper.getToken("Enter client ID: ");
+                return false;
+            }          
 
-         if (warehouse.findClient(clientID)) {
-         //client is found so we accept a payment from a client
-
-         balance = warehouse.getClientBalance(clientID);
-         IOHelper.Println("This client's balance is: " + balance);
-         payment = Double.parseDouble(IOHelper.getToken("Enter payment amount"));
-         warehouse.updateClientBalance(clientID, -payment);
-
-         balance = warehouse.getClientBalance(clientID);
-         IOHelper.Println("This client's new balance is: " + balance);
-
-         } else {
-         IOHelper.Println("Client is not found.");
-         }
-
-         } while (IOHelper.yesOrNo("Would you like to accept payment from another client?"));*/
+            return true;
     }//End of acceptPayment
+    
+    public boolean balanceCheck(String clientID){
+        double balance;
+        if (warehouse.findClient(clientID)){
+            balance = warehouse.getClientBalance(clientID);
+            JOptionPane.showInputDialog("The client's balance is: " + balance);
+            return true;
+        }
+        return false;
+    }
 
     private void getOverdueBalance() {
         String x = "";
@@ -301,23 +286,17 @@ public class SalesState extends WareState implements ActionListener {
          }*/
     }
 
-    private void acceptShipment() {
+    public boolean acceptShipment(String productId, int quantity) {
 
-        do {
-            String productId = JOptionPane.showInputDialog("Enter product ID: ");
             Product p = warehouse.findProduct(productId);
-            int quantity;
 
             if (p != null) {
-                String quant = JOptionPane.showInputDialog("Enter quantity recieved: ");
-                quantity = Integer.parseInt(quant);
 
                 for (Iterator waitList = warehouse.getWaitList(productId); waitList.hasNext();) {
                     Wait wait = (Wait) waitList.next();
-                    //IOHelper.Println(wait.toString());
                     JOptionPane.showMessageDialog(salesFrame, wait.toString());
                     int clientQuantity = wait.getQuantity();
-                    /*if (IOHelper.yesOrNo("Do you want to fulfill waitlist for this client?")) */
+                    
                     int reply = JOptionPane.showConfirmDialog(salesFrame, "Do you want to fulfill waitlist for this client?");
                     if (reply == JOptionPane.YES_OPTION) {
                         if (quantity >= clientQuantity) {
@@ -336,40 +315,12 @@ public class SalesState extends WareState implements ActionListener {
                 }
                 warehouse.updateQuantity(p, quantity);
             }
-            int j = JOptionPane.showConfirmDialog(salesFrame, "Add more items?");
-            if (j == JOptionPane.NO_OPTION || j == JOptionPane.CANCEL_OPTION) {
-                break;
+            else{
+                JOptionPane.showMessageDialog(salesFrame, "Product ID not found.");
+                return false;
             }
-        } while (true);
-        //Console version
-        /*do {
-         String productId = IOHelper.getToken("Enter product ID: ");
-         Product p = warehouse.findProduct(productId);
-         int quantity;
-
-         if (p != null) {
-         quantity = getNumber("Enter quantity recieved:");
-         for (Iterator waitList = warehouse.getWaitList(productId); waitList.hasNext();) {
-         Wait wait = (Wait) waitList.next();
-         IOHelper.Println(wait.toString());
-         int clientQuantity = wait.getQuantity();
-         if (IOHelper.yesOrNo("Do you want to fulfill waitlist for this client?")) {
-         if (quantity >= clientQuantity) {
-         if (warehouse.fulfillWaitList(p, wait.getClient(), clientQuantity)) {
-         quantity -= clientQuantity;
-         waitList.remove();
-         }
-         } else {
-         if (warehouse.fulfillWaitList(p, wait.getClient(), quantity)) {
-         quantity -= quantity;
-         break;
-         }
-         }
-         }
-         }
-         warehouse.updateQuantity(p, quantity);
-         }
-         } while (IOHelper.yesOrNo("Add more items?"));*/
+            
+            return true;
     }//End of acceptOrders
 
     private void showProducts() {
@@ -520,7 +471,7 @@ public class SalesState extends WareState implements ActionListener {
                     addProducts();
                     break;
                 case ACCEPT_PAYMENT:
-                    acceptPayment();
+ //                   acceptPayment();
                     break;
                 case GET_OVERDUE_BALANCE:
                     getOverdueBalance();
@@ -529,7 +480,7 @@ public class SalesState extends WareState implements ActionListener {
                     showWaitlist();
                     break;
                 case ACCEPT_SHIPMENT:
-                    acceptShipment();
+//                    acceptShipment();
                     break;
                 case SHOW_PRODUCTS:
                     showProducts();
@@ -563,7 +514,7 @@ public class SalesState extends WareState implements ActionListener {
         } else if (event.getSource().equals(this.addProductButton)) {
             refreshGUI(addProductPanel);
         } else if (event.getSource().equals(this.acceptPaymentButton)) {
-            acceptPayment();
+//            acceptPayment();
         } else if (event.getSource().equals(this.backButton)) {
             run();
         } else if (event.getSource().equals(this.getOverdueBalanceButton)) {
