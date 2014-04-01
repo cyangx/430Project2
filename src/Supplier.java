@@ -31,6 +31,6 @@ public class Supplier implements Serializable {
     }
 
     public String toString() {
-        return ("Id: " + supplierId() + "Supplier: " + supplierName() + " Price: " + supplierPrice());
+        return ("Id: " + supplierId() + " Supplier: " + supplierName() + " Price: " + supplierPrice());
     }
 }

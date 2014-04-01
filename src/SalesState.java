@@ -55,6 +55,9 @@ public class SalesState extends WareState implements ActionListener {
     private ShowProductsPanel showProductsPanel;
     private AcceptShipmentPanel acceptShipmentPanel;
     private AddSupplierPanel addSupplierPanel;
+    private ShowSuppliersPanel showSuppliersPanel;
+    private ShowProductWaitlistPanel showProductWaitlistPanel;
+    private ShowOverdueBalancePanel showOverdueBalancePanel;
     
     private AcceptPaymentPanel acceptPaymentPanel;
 
@@ -100,6 +103,9 @@ public class SalesState extends WareState implements ActionListener {
         addSupplierPanel = new AddSupplierPanel();
         acceptShipmentPanel = new AcceptShipmentPanel();
         acceptPaymentPanel = new AcceptPaymentPanel();
+        showSuppliersPanel = new ShowSuppliersPanel();
+        showProductWaitlistPanel = new ShowProductWaitlistPanel();
+        showOverdueBalancePanel = new ShowOverdueBalancePanel();
         
 
         cards = new JPanel();
@@ -234,7 +240,7 @@ public class SalesState extends WareState implements ActionListener {
             }
         }
         //JOptionPane.showMessageDialog(salesFrame, "The following have overdue balances:\n" + x);
-        showProductsPanel.outputBox.setText("The following have overdue balances: \n" + x);
+        showOverdueBalancePanel.textArea1.setText("The following have overdue balances: \n" + x);
     }
 
     public void showWaitlist(String pId) {
@@ -249,7 +255,7 @@ public class SalesState extends WareState implements ActionListener {
                 wait = wait + waitList.toString() + "\n";
             }
             //JOptionPane.showMessageDialog(salesFrame, "Waitlist for " + pId + ":\n" + wait);
-            showProductsPanel.outputBox.setText("Waitlist for: " + pId + "\n" + wait);
+            showProductWaitlistPanel.textArea1.setText("Waitlist for: " + pId + "\n" + wait);
         } else {
             JOptionPane.showMessageDialog(salesFrame, "Product not found.");
         }
@@ -300,7 +306,7 @@ public class SalesState extends WareState implements ActionListener {
             Product product = (Product) (allProducts.next());
             prodList = prodList + product.toString() + "\n";
         }
-        showProductsPanel.outputBox.setText("Product list: \n" + prodList);
+        showProductsPanel.textArea1.setText("Product list: \n" + prodList);
         
         //JOptionPane.showMessageDialog(salesFrame, "Product list: \n" + prodList);
 
@@ -316,7 +322,6 @@ public class SalesState extends WareState implements ActionListener {
                 Manufacturer m;
                 m = warehouse.findManufacturer(mId);
                 if (m != null) {
-                    
                     warehouse.addSupplierToProduct(p, m, price);
                     JOptionPane.showMessageDialog(salesFrame, "Supplier added.");
                 } else {
@@ -343,7 +348,7 @@ public class SalesState extends WareState implements ActionListener {
                 supList = supList + sl.toString() + "\n";
             }
 
-            showProductsPanel.outputBox.setText("Supplier list for : " + pId + "\n");
+            showSuppliersPanel.textArea1.setText("Supplier list for : " + pId + "\n" + supList);
         } else {
             JOptionPane.showMessageDialog(salesFrame, "Product not found.");
         }
@@ -432,6 +437,7 @@ public class SalesState extends WareState implements ActionListener {
         } else if (event.getSource().equals(this.backButton)) {
             run();
         } else if (event.getSource().equals(this.getOverdueBalanceButton)) {
+            refreshGUI(showOverdueBalancePanel);
             getOverdueBalance();
         } else if (event.getSource().equals(this.acceptShipmentButton)) {
             refreshGUI(acceptShipmentPanel);
@@ -443,9 +449,9 @@ public class SalesState extends WareState implements ActionListener {
             refreshGUI(showProductsPanel);  
             showProducts();
         } else if (event.getSource().equals(this.showWaitlistButton)) {
- //           showWaitlist();
+            refreshGUI(showProductWaitlistPanel);
         } else if (event.getSource().equals(this.getProductSuppliersButton)) {
-//            supplierList();
+            refreshGUI(showSuppliersPanel);
         }
         //else if(event.getSource().equals(this.textField)) {
         //    JOptionPane.showMessageDialog(salesFrame,"You entered: " + textField.getText());
@@ -467,13 +473,13 @@ public class SalesState extends WareState implements ActionListener {
         pane.setLayout(new FlowLayout());
         pane.add(this.addProductButton);
         pane.add(this.acceptPaymentButton);
-        //pane.add(this.getOverdueBalanceButton);
-        //pane.add(this.showWaitlistButton);
+        pane.add(this.getOverdueBalanceButton);
+        pane.add(this.showWaitlistButton);
         pane.add(this.acceptShipmentButton);
         pane.add(this.showProductsButton);
         pane.add(this.addSupplierButton);
-        //pane.add(this.getProductSuppliersButton);
-        //pane.add(this.switchToClientButton);
+        pane.add(this.getProductSuppliersButton);
+        pane.add(this.switchToClientButton);
 
         //pane.add(this.textField);
         pane.add(this.logoutButton);

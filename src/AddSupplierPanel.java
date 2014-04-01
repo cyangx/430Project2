@@ -42,6 +42,11 @@ public class AddSupplierPanel extends javax.swing.JPanel {
         jLabel2.setText("Manufacturer ID:");
 
         jButton1.setText("CONFIRM");
+        jButton1.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                jButton1ActionPerformed(evt);
+            }
+        });
 
         jButton2.setText("CLEAR");
 
@@ -94,6 +99,25 @@ public class AddSupplierPanel extends javax.swing.JPanel {
                 .addContainerGap())
         );
     }// </editor-fold>//GEN-END:initComponents
+
+    private void jButton1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton1ActionPerformed
+        // TODO add your handling code here:
+        String productID;
+        String manufacturerID;
+        double price;
+        
+        try {
+            
+            productID = jTextField1.getText();
+            manufacturerID = jTextField2.getText();
+            price = Double.parseDouble(jTextField3.getText());
+        }
+        catch(NumberFormatException nfe){
+            return;
+        }
+        boolean success;
+        success = SalesState.instance().addSupplier(productID, manufacturerID, price);
+    }//GEN-LAST:event_jButton1ActionPerformed
 
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
