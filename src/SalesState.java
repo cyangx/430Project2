@@ -236,16 +236,9 @@ public class SalesState extends WareState implements ActionListener {
         return false;
     }
 
-    private void getOverdueBalance() {
+    public void getOverdueBalance() {
         String x = "";
-        /*//Console version
-         Iterator allMembers = warehouse.getMembers();
-         while (allMembers.hasNext()) {
-         Client member = (Client) (allMembers.next());
-         if (member.getBalance() > 0) {
-         IOHelper.Println(member.toStringBalance());
-         }
-         }*/
+
         Iterator allMembers = warehouse.getMembers();
         while (allMembers.hasNext()) {
             Client member = (Client) (allMembers.next());
@@ -253,14 +246,14 @@ public class SalesState extends WareState implements ActionListener {
                 x = x + member.toStringBalance() + "\n";
             }
         }
-        JOptionPane.showMessageDialog(salesFrame, "The following have overdue balances:\n" + x);
+        //JOptionPane.showMessageDialog(salesFrame, "The following have overdue balances:\n" + x);
+        showProductsPanel.outputBox.setText("The following have overdue balances: \n" + x);
     }
 
-    private void showWaitlist() {
+    public void showWaitlist(String pId) {
         //IOHelper.Println("Show wait list for product.");
         String wait = "";
-        String pId = JOptionPane.showInputDialog("Show waitlist for product\n"
-                + "Enter product ID: ");
+
         if (warehouse.findProduct(pId) != null) {
             Iterator wholeWaitList = warehouse.getWaitList(pId);
             while (wholeWaitList.hasNext()) {
@@ -268,22 +261,12 @@ public class SalesState extends WareState implements ActionListener {
                 //IOHelper.Println(waitList.toString());
                 wait = wait + waitList.toString() + "\n";
             }
-            JOptionPane.showMessageDialog(salesFrame, "Waitlist for " + pId + ":\n" + wait);
+            //JOptionPane.showMessageDialog(salesFrame, "Waitlist for " + pId + ":\n" + wait);
+            showProductsPanel.outputBox.setText("Waitlist for: " + pId + "\n" + wait);
         } else {
             JOptionPane.showMessageDialog(salesFrame, "Product not found.");
         }
-        /*//Console version
-         IOHelper.Println("Show wait list for product.");
-         String pId = IOHelper.getToken("Enter product ID: ");
-         if (warehouse.findProduct(pId) != null) {
-         Iterator wholeWaitList = warehouse.getWaitList(pId);
-         while (wholeWaitList.hasNext()) {
-         Wait waitList = (Wait) (wholeWaitList.next());
-         IOHelper.Println(waitList.toString());
-         }
-         } else {
-         IOHelper.Println("Product not found.");
-         }*/
+
     }
 
     public boolean acceptShipment(String productId, int quantity) {
@@ -336,103 +319,47 @@ public class SalesState extends WareState implements ActionListener {
 
     }
 
-    private void addSupplier() {
+    public boolean addSupplier(String pId, String mId, double price) {
         //GUI version
-        do {
-            String pId = JOptionPane.showInputDialog("Enter product id: ");
 
             Product p = warehouse.findProduct(pId);
 
             if (p != null) {
-                String mId = JOptionPane.showInputDialog("Enter manufacturer id: ");
+                
                 Manufacturer m;
                 m = warehouse.findManufacturer(mId);
                 if (m != null) {
-                    double price;
-                    String pr = JOptionPane.showInputDialog("Enter price: ");
-                    price = Double.parseDouble(pr);
-
+                    
                     warehouse.addSupplierToProduct(p, m, price);
                     JOptionPane.showMessageDialog(salesFrame, "Supplier added.");
-                    break;
                 } else {
                     JOptionPane.showMessageDialog(salesFrame, "Could not find manufacturer.");
+                    return false;
                 }
             } else {
                 JOptionPane.showMessageDialog(salesFrame, "Product not found.");
+                return false;
             }
-
-            int j = JOptionPane.showConfirmDialog(salesFrame, "Try again?");
-            if (j == JOptionPane.NO_OPTION || j == JOptionPane.CANCEL_OPTION) {
-                break;
-            }
-        } while (true);
-
-        /*//Console version
-         do {
-         String pId = IOHelper.getToken("Enter product id");
-            
-         Product p = warehouse.findProduct(pId);
-
-         if (p != null) {
-         String mId = IOHelper.getToken("Enter manufacturer id");
-         Manufacturer m;
-         m = warehouse.findManufacturer(mId);
-         if (m != null) {
-         int price = getNumber("Enter price");
-         warehouse.addSupplierToProduct(p, m, price);
-         System.out.println("Supplier added.");
-         break;
-         } else {
-         System.out.println("Could not find manufacturer.");
-         }
-         } else {
-         System.out.println("Product not found.");
-         }
-
-         if (!IOHelper.yesOrNo("Try again?")) {
-         break;
-         }
-
-         } while (true);
-         */
+            return true;
     }
 
-    private void supplierList() {
+    public void supplierList(String pId) {
 
         String supList = "";
-
-        String pId = JOptionPane.showInputDialog("Show supplier list for product.\n "
-                + "Enter product ID: ");
 
         if (warehouse.findProduct(pId) != null) {
             Iterator supplierList = warehouse.getSupplierList(pId);
 
             while (supplierList.hasNext()) {
                 Supplier sl = (Supplier) (supplierList.next());
-                //IOHelper.Println(sl.toString());
+
                 supList = supList + sl.toString() + "\n";
             }
-            JOptionPane.showMessageDialog(salesFrame, "Supplier list for " + pId
-                    + ":\n" + supList);
+
+            showProductsPanel.outputBox.setText("Supplier list for : " + pId + "\n");
         } else {
             JOptionPane.showMessageDialog(salesFrame, "Product not found.");
         }
-
-        /*//Console version
-         IOHelper.Println("Show supplier list for product.");
-         String pId = IOHelper.getToken("Enter product ID");
-
-         if (warehouse.findProduct(pId) != null) {
-         Iterator supplierList = warehouse.getSupplierList(pId);
-
-         while (supplierList.hasNext()) {
-         Supplier sl = (Supplier) (supplierList.next());
-         IOHelper.Println(sl.toString());
-         }
-         } else {
-         IOHelper.Println("Product not found.");
-         }*/
     }
 
     private void becomeClient() {
@@ -477,7 +404,7 @@ public class SalesState extends WareState implements ActionListener {
                     getOverdueBalance();
                     break;
                 case SHOW_WAITLIST:
-                    showWaitlist();
+//                    showWaitlist();
                     break;
                 case ACCEPT_SHIPMENT:
 //                    acceptShipment();
@@ -486,10 +413,10 @@ public class SalesState extends WareState implements ActionListener {
                     showProducts();
                     break;
                 case ADD_SUPPLIER:
-                    addSupplier();
+ //                   addSupplier();
                     break;
                 case GET_PRODUCT_SUPPLIERS:
-                    supplierList();
+ //                   supplierList();
                     break;
                 case BECOME_CLIENT:
                     becomeClient();
@@ -529,9 +456,9 @@ public class SalesState extends WareState implements ActionListener {
             refreshGUI(showProductsPanel);  
             showProducts();
         } else if (event.getSource().equals(this.showWaitlistButton)) {
-            showWaitlist();
+ //           showWaitlist();
         } else if (event.getSource().equals(this.getProductSuppliersButton)) {
-            supplierList();
+//            supplierList();
         }
         //else if(event.getSource().equals(this.textField)) {
         //    JOptionPane.showMessageDialog(salesFrame,"You entered: " + textField.getText());
