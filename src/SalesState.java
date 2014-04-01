@@ -55,6 +55,8 @@ public class SalesState extends WareState implements ActionListener {
     private ShowProductsPanel showProductsPanel;
     private AcceptShipmentPanel acceptShipmentPanel;
     private AddSupplierPanel addSupplierPanel;
+    
+    private AcceptPaymentPanel acceptPaymentPanel;
 
     //private JPanel addProductPanel;
     private JButton logoutButton;
@@ -97,6 +99,8 @@ public class SalesState extends WareState implements ActionListener {
         showProductsPanel = new ShowProductsPanel();
         addSupplierPanel = new AddSupplierPanel();
         acceptShipmentPanel = new AcceptShipmentPanel();
+        acceptPaymentPanel = new AcceptPaymentPanel();
+        
 
         cards = new JPanel();
         //cards.add(addProductPanel);
@@ -163,25 +167,7 @@ public class SalesState extends WareState implements ActionListener {
             }
         } while (true);//End of do while
 
-        /*//Console Version
-         do {
-         String title = IOHelper.getToken("Enter  product name: ");
-         String productID = IOHelper.getToken("Enter id: ");
-         price = Double.parseDouble(IOHelper.getToken("Enter price: "));
-         quantity = Integer.parseInt(IOHelper.getToken("Enter quantity: "));
 
-         result = warehouse.addProduct(title, productID, price, quantity);
-         if (result != null) {
-         System.out.println(result);
-         } else {
-         IOHelper.Println("Product could not be added.");
-         }
-
-         if (!IOHelper.yesOrNo("Add more products?")) {
-         break;
-         }
-
-         } while (true);*/
     }//End addProducts
 
     public boolean addProduct(String title, String productID, int quantity, double price) {
@@ -230,9 +216,10 @@ public class SalesState extends WareState implements ActionListener {
         double balance;
         if (warehouse.findClient(clientID)){
             balance = warehouse.getClientBalance(clientID);
-            JOptionPane.showInputDialog("The client's balance is: " + balance);
+            JOptionPane.showMessageDialog(salesFrame, "The client's balance is: " + balance);
             return true;
         }
+        JOptionPane.showMessageDialog(salesFrame, "Client not found.");
         return false;
     }
 
@@ -441,7 +428,7 @@ public class SalesState extends WareState implements ActionListener {
         } else if (event.getSource().equals(this.addProductButton)) {
             refreshGUI(addProductPanel);
         } else if (event.getSource().equals(this.acceptPaymentButton)) {
-//            acceptPayment();
+            refreshGUI(acceptPaymentPanel);
         } else if (event.getSource().equals(this.backButton)) {
             run();
         } else if (event.getSource().equals(this.getOverdueBalanceButton)) {
@@ -479,7 +466,7 @@ public class SalesState extends WareState implements ActionListener {
         pane.removeAll();
         pane.setLayout(new FlowLayout());
         pane.add(this.addProductButton);
-        //pane.add(this.acceptPaymentButton);
+        pane.add(this.acceptPaymentButton);
         //pane.add(this.getOverdueBalanceButton);
         //pane.add(this.showWaitlistButton);
         pane.add(this.acceptShipmentButton);
