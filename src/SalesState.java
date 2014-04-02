@@ -13,7 +13,7 @@ import javax.swing.JPanel;
 
 /**
  *
- * @author Eric Dorphy -- Stage 1
+ * @author Eric Dorphy -- Stage 1 and Stage 3
  * @author Brandon Theisen -- Stage 3
  */
 public class SalesState extends WareState implements ActionListener {
@@ -74,7 +74,7 @@ public class SalesState extends WareState implements ActionListener {
         addProductButton.addActionListener(this);
         acceptPaymentButton = new JButton("Accept Payment");
         acceptPaymentButton.addActionListener(this);
-        getOverdueBalanceButton = new JButton("Get Overdue Balance");
+        getOverdueBalanceButton = new JButton("Show Overdue Balances");
         getOverdueBalanceButton.addActionListener(this);
         showWaitlistButton = new JButton("Show Waitlist");
         showWaitlistButton.addActionListener(this);
@@ -84,7 +84,7 @@ public class SalesState extends WareState implements ActionListener {
         showProductsButton.addActionListener(this);
         addSupplierButton = new JButton("Add Supplier to Product");
         addSupplierButton.addActionListener(this);
-        getProductSuppliersButton = new JButton("Get Product Suppliers");
+        getProductSuppliersButton = new JButton("Show Product Suppliers");
         getProductSuppliersButton.addActionListener(this);
         confirmAddProductButton = new JButton("Confirm");
         confirmAddProductButton.addActionListener(this);
