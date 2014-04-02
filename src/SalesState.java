@@ -79,7 +79,6 @@ public class SalesState extends WareState {
         });
 
         acceptPaymentButton = new JButton("Accept Payment");
-<<<<<<< HEAD
         acceptPaymentButton.addActionListener(new java.awt.event.ActionListener() {
             @Override
             public void actionPerformed(java.awt.event.ActionEvent evt) {
@@ -99,13 +98,8 @@ public class SalesState extends WareState {
                 }
                 refreshGUI(showOverdueBalancePanel);
             }
-        });
-
-=======
-        acceptPaymentButton.addActionListener(this);
-        getOverdueBalanceButton = new JButton("Show Overdue Balances");
-        getOverdueBalanceButton.addActionListener(this);
->>>>>>> FETCH_HEAD
+        });      
+        
         showWaitlistButton = new JButton("Show Waitlist");
         showWaitlistButton.addActionListener(new java.awt.event.ActionListener() {
             @Override
@@ -140,7 +134,6 @@ public class SalesState extends WareState {
         });
         
         addSupplierButton = new JButton("Add Supplier to Product");
-<<<<<<< HEAD
         addSupplierButton.addActionListener(new java.awt.event.ActionListener() {
             @Override
             public void actionPerformed(java.awt.event.ActionEvent evt) {
@@ -161,14 +154,7 @@ public class SalesState extends WareState {
                 refreshGUI(showSuppliersPanel);
             }
         });
-        
-=======
-        addSupplierButton.addActionListener(this);
-        getProductSuppliersButton = new JButton("Show Product Suppliers");
-        getProductSuppliersButton.addActionListener(this);
-        confirmAddProductButton = new JButton("Confirm");
-        confirmAddProductButton.addActionListener(this);
->>>>>>> FETCH_HEAD
+                     
         switchToClientButton = new JButton("Switch to Client");
         switchToClientButton.addActionListener(new java.awt.event.ActionListener() {
             @Override
