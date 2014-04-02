@@ -119,8 +119,8 @@ public class WareContext {
 
         WareFrame = new JFrame("Warehouse GUI");
 
-        WareFrame.setSize(400, 400);
-        WareFrame.setLocation(400, 400);
+        WareFrame.setSize(800, 600);
+        //WareFrame.setLocation(400, 400);
     }
 
     public JFrame getFrame() {

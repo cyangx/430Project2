@@ -8,15 +8,15 @@ import java.awt.*;
 import javax.swing.JButton;
 import javax.swing.JFrame;
 import javax.swing.JOptionPane;
-import javax.swing.JTextField;
 import javax.swing.JPanel;
 
 /**
  *
  * @author Eric Dorphy -- Stage 1
  * @author Brandon Theisen -- Stage 3
+ * @author Eric Dorphy -- Refactor Stage 3
  */
-public class SalesState extends WareState implements ActionListener {
+public class SalesState extends WareState {
 
     private static Warehouse warehouse;
     private WareContext context;
@@ -35,9 +35,7 @@ public class SalesState extends WareState implements ActionListener {
     private static final int HELP = IOHelper.HELP;
 
     private JFrame salesFrame;
-    private JPanel cards;
-
-    private JPanel addProduct;
+    private JPanel salesMenuPanel;
 
     private JButton addProductButton;
     private JButton acceptPaymentButton;
@@ -47,8 +45,7 @@ public class SalesState extends WareState implements ActionListener {
     private JButton showProductsButton;
     private JButton addSupplierButton;
     private JButton getProductSuppliersButton;
-    private JButton backButton;
-    private JButton confirmAddProductButton;
+    private JButton backButton;    
     private JButton switchToClientButton;
 
     private AddProductPanel addProductPanel;
@@ -58,7 +55,7 @@ public class SalesState extends WareState implements ActionListener {
     private ShowSuppliersPanel showSuppliersPanel;
     private ShowProductWaitlistPanel showProductWaitlistPanel;
     private ShowOverdueBalancePanel showOverdueBalancePanel;
-    
+
     private AcceptPaymentPanel acceptPaymentPanel;
 
     //private JPanel addProductPanel;
@@ -71,46 +68,110 @@ public class SalesState extends WareState implements ActionListener {
         warehouse = Warehouse.instance();
 
         addProductButton = new JButton("Add Product");
-        addProductButton.addActionListener(this);
+        addProductButton.addActionListener(new java.awt.event.ActionListener() {
+            @Override
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                if (addProductPanel == null) {
+                    addProductPanel = new AddProductPanel();
+                }
+                refreshGUI(addProductPanel);
+            }
+        });
+
         acceptPaymentButton = new JButton("Accept Payment");
-        acceptPaymentButton.addActionListener(this);
+        acceptPaymentButton.addActionListener(new java.awt.event.ActionListener() {
+            @Override
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                if (acceptPaymentPanel == null) {
+                    acceptPaymentPanel = new AcceptPaymentPanel();
+                }
+                refreshGUI(acceptPaymentPanel);
+            }
+        });
+
         getOverdueBalanceButton = new JButton("Get Overdue Balance");
-        getOverdueBalanceButton.addActionListener(this);
+        getOverdueBalanceButton.addActionListener(new java.awt.event.ActionListener() {
+            @Override
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                if (showOverdueBalancePanel == null) {
+                    showOverdueBalancePanel = new ShowOverdueBalancePanel();
+                }
+                refreshGUI(showOverdueBalancePanel);
+            }
+        });
+
         showWaitlistButton = new JButton("Show Waitlist");
-        showWaitlistButton.addActionListener(this);
-        acceptShipmentButton = new JButton("Accept Shipment");
-        acceptShipmentButton.addActionListener(this);
-        showProductsButton = new JButton("Show Product List");
-        showProductsButton.addActionListener(this);
-        addSupplierButton = new JButton("Add Supplier to Product");
-        addSupplierButton.addActionListener(this);
-        getProductSuppliersButton = new JButton("Get Product Suppliers");
-        getProductSuppliersButton.addActionListener(this);
-        confirmAddProductButton = new JButton("Confirm");
-        confirmAddProductButton.addActionListener(this);
-        switchToClientButton = new JButton("Switch to Client");
-        switchToClientButton.addActionListener(this);
-
-        //addProductButton = new JButton("Add Product");
-        //addProductButton.addActionListener(this);
- //       backButton = new JButton("Back");
-        //       backButton.addActionListener(this);
-        logoutButton = new JButton("Logout");
-        logoutButton.addActionListener(this);
-
-        addProductPanel = new AddProductPanel();
-        showProductsPanel = new ShowProductsPanel();
-        addSupplierPanel = new AddSupplierPanel();
-        acceptShipmentPanel = new AcceptShipmentPanel();
-        acceptPaymentPanel = new AcceptPaymentPanel();
-        showSuppliersPanel = new ShowSuppliersPanel();
-        showProductWaitlistPanel = new ShowProductWaitlistPanel();
-        showOverdueBalancePanel = new ShowOverdueBalancePanel();
+        showWaitlistButton.addActionListener(new java.awt.event.ActionListener() {
+            @Override
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                if (showProductWaitlistPanel == null) {
+                    showProductWaitlistPanel = new ShowProductWaitlistPanel();
+                }
+                refreshGUI(showProductWaitlistPanel);
+            }
+        });
         
-
-        cards = new JPanel();
-        //cards.add(addProductPanel);
-        //cards.add(showProductsPanel);
+        acceptShipmentButton = new JButton("Accept Shipment");
+        acceptShipmentButton.addActionListener(new java.awt.event.ActionListener() {
+            @Override
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                if (acceptShipmentPanel == null) {
+                    acceptShipmentPanel = new AcceptShipmentPanel();
+                }
+                refreshGUI(acceptShipmentPanel);
+            }
+        });
+        
+        showProductsButton = new JButton("Show Product List");
+        showProductsButton.addActionListener(new java.awt.event.ActionListener() {
+            @Override
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                if (showProductsPanel == null) {
+                    showProductsPanel = new ShowProductsPanel();
+                }
+                refreshGUI(showProductsPanel);
+            }
+        });
+        
+        addSupplierButton = new JButton("Add Supplier to Product");
+        addSupplierButton.addActionListener(new java.awt.event.ActionListener() {
+            @Override
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                if (addSupplierPanel == null) {
+                    addSupplierPanel = new AddSupplierPanel();
+                }
+                refreshGUI(addSupplierPanel);
+            }
+        });
+        
+        getProductSuppliersButton = new JButton("Get Product Suppliers");
+        getProductSuppliersButton.addActionListener(new java.awt.event.ActionListener() {
+            @Override
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                if (showSuppliersPanel == null) {
+                    showSuppliersPanel = new ShowSuppliersPanel();
+                }
+                refreshGUI(showSuppliersPanel);
+            }
+        });
+        
+        switchToClientButton = new JButton("Switch to Client");
+        switchToClientButton.addActionListener(new java.awt.event.ActionListener() {
+            @Override
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                becomeClient();
+            }
+        });
+        
+        logoutButton = new JButton("Logout");
+        logoutButton.addActionListener(new java.awt.event.ActionListener() {
+            @Override
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                logout();
+            }
+        });
+       
+        salesMenuPanel = new JPanel();
     }
 
     public static SalesState instance() {
@@ -173,54 +234,52 @@ public class SalesState extends WareState implements ActionListener {
             }
         } while (true);//End of do while
 
-
     }//End addProducts
 
     public boolean addProduct(String title, String productID, int quantity, double price) {
-       Product result;
+        Product result;
 
-       if(title.equals("") || productID.equals("") || quantity == 0 || price == 0){
-           JOptionPane.showMessageDialog(salesFrame, "Product could not be added.");
-           return false;
-       }
+        if (title.equals("") || productID.equals("") || quantity == 0 || price == 0) {
+            JOptionPane.showMessageDialog(salesFrame, "Product could not be added.");
+            return false;
+        }
 
-       result = warehouse.addProduct(title, productID, price, quantity);
+        result = warehouse.addProduct(title, productID, price, quantity);
 
+        if (result != null) {
+            JOptionPane.showMessageDialog(salesFrame, result);
+        } else {
+            JOptionPane.showMessageDialog(salesFrame, "Product could not be added.");
+            return false;
+        }
+        return true;
+    }//End addProducts
 
-       if (result != null) {
-           JOptionPane.showMessageDialog(salesFrame, result);
-       } else {
-           JOptionPane.showMessageDialog(salesFrame, "Product could not be added.");
-           return false;
-       }
-       return true;
-   }//End addProducts
-    
     public boolean acceptPayment(String clientID, double payment) {
         double balance;
-        
-            if (warehouse.findClient(clientID)) {
-                //client is found so we accept a payment from a client
 
-                balance = warehouse.getClientBalance(clientID);
-                
-                warehouse.updateClientBalance(clientID, -payment);
+        if (warehouse.findClient(clientID)) {
+            //client is found so we accept a payment from a client
 
-                balance = warehouse.getClientBalance(clientID);
-                //IOHelper.Println("This client's new balance is: " + balance);
-                JOptionPane.showMessageDialog(null, "The client's new balance is: " + balance);
+            balance = warehouse.getClientBalance(clientID);
 
-            } else {
-                JOptionPane.showMessageDialog(salesFrame, "Client not found.");
-                return false;
-            }          
+            warehouse.updateClientBalance(clientID, -payment);
 
-            return true;
+            balance = warehouse.getClientBalance(clientID);
+            //IOHelper.Println("This client's new balance is: " + balance);
+            JOptionPane.showMessageDialog(null, "The client's new balance is: " + balance);
+
+        } else {
+            JOptionPane.showMessageDialog(salesFrame, "Client not found.");
+            return false;
+        }
+
+        return true;
     }//End of acceptPayment
-    
-    public boolean balanceCheck(String clientID){
+
+    public boolean balanceCheck(String clientID) {
         double balance;
-        if (warehouse.findClient(clientID)){
+        if (warehouse.findClient(clientID)) {
             balance = warehouse.getClientBalance(clientID);
             JOptionPane.showMessageDialog(salesFrame, "The client's balance is: " + balance);
             return true;
@@ -264,39 +323,38 @@ public class SalesState extends WareState implements ActionListener {
 
     public boolean acceptShipment(String productId, int quantity) {
 
-            Product p = warehouse.findProduct(productId);
+        Product p = warehouse.findProduct(productId);
 
-            if (p != null) {
+        if (p != null) {
 
-                for (Iterator waitList = warehouse.getWaitList(productId); waitList.hasNext();) {
-                    Wait wait = (Wait) waitList.next();
-                    JOptionPane.showMessageDialog(salesFrame, wait.toString());
-                    int clientQuantity = wait.getQuantity();
-                    
-                    int reply = JOptionPane.showConfirmDialog(salesFrame, "Do you want to fulfill waitlist for this client?");
-                    if (reply == JOptionPane.YES_OPTION) {
-                        if (quantity >= clientQuantity) {
-                            if (warehouse.fulfillWaitList(p, wait.getClient(), clientQuantity)) {
-                                quantity -= clientQuantity;
-                                waitList.remove();
-                            }
-                        } else {
-                            if (warehouse.fulfillWaitList(p, wait.getClient(), quantity)) {
-                                quantity -= quantity;
-                                break;
-                            }
+            for (Iterator waitList = warehouse.getWaitList(productId); waitList.hasNext();) {
+                Wait wait = (Wait) waitList.next();
+                JOptionPane.showMessageDialog(salesFrame, wait.toString());
+                int clientQuantity = wait.getQuantity();
+
+                int reply = JOptionPane.showConfirmDialog(salesFrame, "Do you want to fulfill waitlist for this client?");
+                if (reply == JOptionPane.YES_OPTION) {
+                    if (quantity >= clientQuantity) {
+                        if (warehouse.fulfillWaitList(p, wait.getClient(), clientQuantity)) {
+                            quantity -= clientQuantity;
+                            waitList.remove();
+                        }
+                    } else {
+                        if (warehouse.fulfillWaitList(p, wait.getClient(), quantity)) {
+                            quantity -= quantity;
+                            break;
                         }
                     }
-
                 }
-                warehouse.updateQuantity(p, quantity);
+
             }
-            else{
-                JOptionPane.showMessageDialog(salesFrame, "Product ID not found.");
-                return false;
-            }
-            
-            return true;
+            warehouse.updateQuantity(p, quantity);
+        } else {
+            JOptionPane.showMessageDialog(salesFrame, "Product ID not found.");
+            return false;
+        }
+
+        return true;
     }//End of acceptOrders
 
     private void showProducts() {
@@ -307,32 +365,31 @@ public class SalesState extends WareState implements ActionListener {
             prodList = prodList + product.toString() + "\n";
         }
         showProductsPanel.textArea1.setText("Product list: \n" + prodList);
-        
-        //JOptionPane.showMessageDialog(salesFrame, "Product list: \n" + prodList);
 
+        //JOptionPane.showMessageDialog(salesFrame, "Product list: \n" + prodList);
     }
 
     public boolean addSupplier(String pId, String mId, double price) {
         //GUI version
 
-            Product p = warehouse.findProduct(pId);
+        Product p = warehouse.findProduct(pId);
 
-            if (p != null) {
-                
-                Manufacturer m;
-                m = warehouse.findManufacturer(mId);
-                if (m != null) {
-                    warehouse.addSupplierToProduct(p, m, price);
-                    JOptionPane.showMessageDialog(salesFrame, "Supplier added.");
-                } else {
-                    JOptionPane.showMessageDialog(salesFrame, "Could not find manufacturer.");
-                    return false;
-                }
+        if (p != null) {
+
+            Manufacturer m;
+            m = warehouse.findManufacturer(mId);
+            if (m != null) {
+                warehouse.addSupplierToProduct(p, m, price);
+                JOptionPane.showMessageDialog(salesFrame, "Supplier added.");
             } else {
-                JOptionPane.showMessageDialog(salesFrame, "Product not found.");
+                JOptionPane.showMessageDialog(salesFrame, "Could not find manufacturer.");
                 return false;
             }
-            return true;
+        } else {
+            JOptionPane.showMessageDialog(salesFrame, "Product not found.");
+            return false;
+        }
+        return true;
     }
 
     public void supplierList(String pId) {
@@ -379,94 +436,13 @@ public class SalesState extends WareState implements ActionListener {
         }
     }
 
-    private void process() {
-        int command;
-        help();
-        while ((command = IOHelper.GetCmd()) != EXIT) {
-            switch (command) {
-                case EXIT:
-                    break;
-                case ADD_PRODUCT:
-                    addProducts();
-                    break;
-                case ACCEPT_PAYMENT:
- //                   acceptPayment();
-                    break;
-                case GET_OVERDUE_BALANCE:
-                    getOverdueBalance();
-                    break;
-                case SHOW_WAITLIST:
-//                    showWaitlist();
-                    break;
-                case ACCEPT_SHIPMENT:
-//                    acceptShipment();
-                    break;
-                case SHOW_PRODUCTS:
-                    showProducts();
-                    break;
-                case ADD_SUPPLIER:
- //                   addSupplier();
-                    break;
-                case GET_PRODUCT_SUPPLIERS:
- //                   supplierList();
-                    break;
-                case BECOME_CLIENT:
-                    becomeClient();
-                    break;
-                case HELP:
-                    help();
-                    break;
-            }
-        }
-        logout();
-    }
-
     private void refreshGUI(JPanel showPanel) {
-        cards.removeAll();
-        cards.add(showPanel);
+        salesMenuPanel.removeAll();
+        salesMenuPanel.add(showPanel);
         salesFrame.validate();
     }
-    
-    public void actionPerformed(ActionEvent event) {
-        if (event.getSource().equals(this.logoutButton)) {
-            logout();
-        } else if (event.getSource().equals(this.addProductButton)) {
-            refreshGUI(addProductPanel);
-        } else if (event.getSource().equals(this.acceptPaymentButton)) {
-            refreshGUI(acceptPaymentPanel);
-        } else if (event.getSource().equals(this.backButton)) {
-            run();
-        } else if (event.getSource().equals(this.getOverdueBalanceButton)) {
-            refreshGUI(showOverdueBalancePanel);
-            getOverdueBalance();
-        } else if (event.getSource().equals(this.acceptShipmentButton)) {
-            refreshGUI(acceptShipmentPanel);
-        } else if (event.getSource().equals(this.switchToClientButton)) {
-            becomeClient();
-        } else if (event.getSource().equals(this.addSupplierButton)) {
-            refreshGUI(addSupplierPanel);
-        } else if (event.getSource().equals(this.showProductsButton)) {
-            refreshGUI(showProductsPanel);  
-            showProducts();
-        } else if (event.getSource().equals(this.showWaitlistButton)) {
-            refreshGUI(showProductWaitlistPanel);
-        } else if (event.getSource().equals(this.getProductSuppliersButton)) {
-            refreshGUI(showSuppliersPanel);
-        }
-        //else if(event.getSource().equals(this.textField)) {
-        //    JOptionPane.showMessageDialog(salesFrame,"You entered: " + textField.getText());
-        //}
-        /*else if(event.getSource().equals(this.confirmAddProductButton)){
-         data1 = textField.getText();
-         data2 = textField2.getText();
-         data3 = textField3.getText();
-         data4 = textField4.getText();
-         confirmClick = true;
-         }*/
-    }
 
-    public void run() {
-        //process();
+    public void run() {        
         salesFrame = WareContext.instance().getFrame();
         Container pane = salesFrame.getContentPane();
         pane.removeAll();
@@ -479,12 +455,10 @@ public class SalesState extends WareState implements ActionListener {
         pane.add(this.showProductsButton);
         pane.add(this.addSupplierButton);
         pane.add(this.getProductSuppliersButton);
-        pane.add(this.switchToClientButton);
-
-        //pane.add(this.textField);
+        pane.add(this.switchToClientButton);      
         pane.add(this.logoutButton);
-        // TODO: add other buttons and items here
-        pane.add(cards, BorderLayout.CENTER);
+        
+        pane.add(salesMenuPanel, BorderLayout.CENTER);
 
         salesFrame.setVisible(true);
         salesFrame.paint(salesFrame.getGraphics());
