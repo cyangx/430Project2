@@ -6,6 +6,7 @@
 /**
  *
  * @author Anil
+ * @author Eric - Refactor pre GUI
  */
 import java.awt.Container;
 import java.awt.FlowLayout;
