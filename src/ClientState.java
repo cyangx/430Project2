@@ -1,14 +1,13 @@
 
 import java.awt.Container;
 import java.awt.FlowLayout;
-import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
 import java.io.*;
 import java.util.*;
 import javax.swing.JButton;
 import javax.swing.JFrame;
+import javax.swing.JPanel;
 
-public class ClientState extends WareState implements ActionListener {
+public class ClientState extends WareState {
 
     private BufferedReader reader = new BufferedReader(new InputStreamReader(System.in));
     private static Warehouse warehouse;
@@ -22,15 +21,82 @@ public class ClientState extends WareState implements ActionListener {
     private static final int HELP = IOHelper.HELP;
 
     private JFrame clientFrame;
-    private JButton logoutButton;
+
+    private final JButton logoutButton;
+    private final JButton createOrderButton;
+    private final JButton showBalanceButton;
+    private final JButton showTransactionsButton;
+    private final JButton showProductsButton;
+
+    private JPanel clientMenuPanel;
+    private ShowClientTransactionsPanel transactionPanel;
+    private ShowClientBalancePanel balancePanel;
+    private AcceptOrdersPanel acceptOrderPanel;
+    private ShowProductsPanel productsPanel;
 
     private ClientState() {
         super();
         warehouse = Warehouse.instance();
 
+        clientMenuPanel = new JPanel();
+        
         logoutButton = new JButton("Logout");
-        logoutButton.addActionListener(this);
+        logoutButton.addActionListener(new java.awt.event.ActionListener() {
+            @Override
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                logout();
+            }
+        });
 
+        createOrderButton = new JButton("Create Order");
+        createOrderButton.addActionListener(new java.awt.event.ActionListener() {
+            @Override
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                if (acceptOrderPanel == null) {
+                    acceptOrderPanel = new AcceptOrdersPanel();
+                }
+                refreshGUI(acceptOrderPanel);
+            }
+        });
+
+        showBalanceButton = new JButton("View Balance");
+        showBalanceButton.addActionListener(new java.awt.event.ActionListener() {
+            @Override
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                if (balancePanel == null) {
+                    balancePanel = new ShowClientBalancePanel();
+                }
+                refreshGUI(balancePanel);
+            }
+        });
+
+        showTransactionsButton = new JButton("View Transactions");
+        showTransactionsButton.addActionListener(new java.awt.event.ActionListener() {
+            @Override
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                if (transactionPanel == null) {
+                    transactionPanel = new ShowClientTransactionsPanel();
+                }
+                refreshGUI(transactionPanel);
+            }
+        });
+
+        showProductsButton = new JButton("View Products");
+        showProductsButton.addActionListener(new java.awt.event.ActionListener() {
+            @Override
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                if (productsPanel == null) {
+                    productsPanel = new ShowProductsPanel();
+                }
+                refreshGUI(productsPanel);
+            }
+        });
+    }
+
+    private void refreshGUI(JPanel showPanel) {
+        clientMenuPanel.removeAll();
+        clientMenuPanel.add(showPanel);
+        clientFrame.validate();
     }
 
     public static ClientState instance() {
@@ -90,7 +156,6 @@ public class ClientState extends WareState implements ActionListener {
         } else {
             System.out.println("Client is not found.");
         }
-
     }
 
     private void getTransactions() {
@@ -163,12 +228,7 @@ public class ClientState extends WareState implements ActionListener {
         logout();
     }
 
-    public void actionPerformed(ActionEvent event) {
-        if (event.getSource().equals(this.logoutButton)) {
-            logout();
-        }
-    }
-
+    @Override
     public void run() {
         //process();
         clientFrame = WareContext.instance().getFrame();
@@ -176,7 +236,12 @@ public class ClientState extends WareState implements ActionListener {
         pane.removeAll();
         pane.setLayout(new FlowLayout());
         pane.add(this.logoutButton);
-        // TODO: add other buttons and items here
+        pane.add(this.createOrderButton);
+        pane.add(this.showBalanceButton);
+        pane.add(this.showTransactionsButton);
+        pane.add(this.showProductsButton);
+        pane.add(this.clientMenuPanel);
+        
 
         clientFrame.setVisible(true);
         clientFrame.paint(clientFrame.getGraphics());

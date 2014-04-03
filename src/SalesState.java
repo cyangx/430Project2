@@ -266,7 +266,7 @@ public class SalesState extends WareState {
                 wait = wait + waitList.toString() + "\n";
             }
             //JOptionPane.showMessageDialog(salesFrame, "Waitlist for " + pId + ":\n" + wait);
-            showProductWaitlistPanel.textArea1.setText("Waitlist for: " + pId + "\n" + wait);
+            showProductWaitlistPanel.jTextArea1.setText("Waitlist for: " + pId + "\n" + wait);
         } else {
             JOptionPane.showMessageDialog(salesFrame, "Product not found.");
         }
@@ -315,7 +315,7 @@ public class SalesState extends WareState {
             prodList = prodList + product.toString() + "\n";
         }
 
-        showProductsPanel.textArea1.setText("Product list: \n" + prodList);
+        showProductsPanel.jTextArea1.setText("Product list: \n" + prodList);
     }
 
     public boolean addSupplier(String pId, String mId, double price) {
