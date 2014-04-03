@@ -8,7 +8,7 @@ import java.util.*;
 import javax.swing.JButton;
 import javax.swing.JFrame;
 
-public class ClientState extends WareState implements ActionListener{
+public class ClientState extends WareState implements ActionListener {
 
     private BufferedReader reader = new BufferedReader(new InputStreamReader(System.in));
     private static Warehouse warehouse;
@@ -20,17 +20,17 @@ public class ClientState extends WareState implements ActionListener{
     private static final int GET_TRANSACTIONS = 3;
     private static final int SHOW_PRODUCTS = 4;
     private static final int HELP = IOHelper.HELP;
-    
+
     private JFrame clientFrame;
     private JButton logoutButton;
 
     private ClientState() {
         super();
         warehouse = Warehouse.instance();
-        
+
         logoutButton = new JButton("Logout");
         logoutButton.addActionListener(this);
-        
+
     }
 
     public static ClientState instance() {
@@ -124,15 +124,15 @@ public class ClientState extends WareState implements ActionListener{
         if ((WareContext.instance()).getLogin() == WareContext.IsManager) {
             System.out.println(" going to sales \n ");
             (WareContext.instance()).changeState(WareContext.SALES_STATE); // exit with a code 1
-            
+
         } else if (WareContext.instance().getLogin() == WareContext.IsSales) {
             System.out.println(" going to sales \n");
             (WareContext.instance()).changeState(WareContext.SALES_STATE); // exit with a code 2
-            
+
         } else if (WareContext.instance().getLogin() == WareContext.IsClient) {
             System.out.println(" going to login \n");
-            (WareContext.instance()).changeState(WareContext.LOGIN_STATE); 
-            
+            (WareContext.instance()).changeState(WareContext.LOGIN_STATE);
+
         } else {
             (WareContext.instance()).changeState(WareContext.CLIENT_STATE); // exit code 2, indicates error
         }
@@ -162,7 +162,7 @@ public class ClientState extends WareState implements ActionListener{
         }
         logout();
     }
-    
+
     public void actionPerformed(ActionEvent event) {
         if (event.getSource().equals(this.logoutButton)) {
             logout();
@@ -177,7 +177,7 @@ public class ClientState extends WareState implements ActionListener{
         pane.setLayout(new FlowLayout());
         pane.add(this.logoutButton);
         // TODO: add other buttons and items here
-        
+
         clientFrame.setVisible(true);
         clientFrame.paint(clientFrame.getGraphics());
     }

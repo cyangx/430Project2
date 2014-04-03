@@ -1,6 +1,5 @@
 
 import java.util.*;
-import java.lang.*;
 import java.io.*;
 
 public class ProductList implements Serializable {
@@ -10,6 +9,7 @@ public class ProductList implements Serializable {
     private static ProductList productList;
 
     private ProductList() {
+        
     }
 
     public static ProductList instance() {
@@ -68,8 +68,8 @@ public class ProductList implements Serializable {
         return null;
     }
 
+    @Override
     public String toString() {
         return products.toString();
     }
-
 }

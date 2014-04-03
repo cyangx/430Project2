@@ -1,4 +1,3 @@
-
 import java.util.*;
 import java.io.*;
 
@@ -12,11 +11,11 @@ public class Order implements Serializable {
         this.clientId = clientId;
     }
 
-
-    public Iterator getItemList(){
+    public Iterator getItemList() {
         return itemList.iterator();
     }
-  public List getItemLists(){
+
+    public List getItemLists() {
         return itemList;
     }
 
@@ -42,7 +41,5 @@ public class Order implements Serializable {
         for (int i = 0; i < itemList.size(); i++) {
             System.out.println(itemList.get(i));
         }
-
     }
-
 }

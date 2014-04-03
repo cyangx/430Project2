@@ -115,9 +115,7 @@ public class AddProductPanel extends javax.swing.JPanel {
     }// </editor-fold>//GEN-END:initComponents
 
     private void enterButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_enterButtonActionPerformed
-        // TODO add your handling code here:
-        String title;
-        String id;
+        String title, id;
         int quantity;
         double price;
 
@@ -132,11 +130,13 @@ public class AddProductPanel extends javax.swing.JPanel {
 
         boolean success;
         success = SalesState.instance().addProduct(title, id, quantity, price);
-
     }//GEN-LAST:event_enterButtonActionPerformed
 
+    /**
+     * Clears the text fields
+     * @param evt 
+     */
     private void clearButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_clearButtonActionPerformed
-        // TODO add your handling code here:
         titleTextBox.setText("");
         idTextBox.setText("");
         quantityTextBox.setText("");

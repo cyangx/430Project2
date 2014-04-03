@@ -1,7 +1,4 @@
-
 import java.io.*;
-import java.text.*;
-import java.util.*;
 import javax.swing.JFrame;
 
 public class WareContext {
@@ -11,7 +8,7 @@ public class WareContext {
     private static WareContext context;
     private int currentUser;
     private String userID;
-    private BufferedReader reader = new BufferedReader(new InputStreamReader(System.in));
+    //private BufferedReader reader = new BufferedReader(new InputStreamReader(System.in));
     public static final int IsManager = 0;
     public static final int IsSales = 1;
     public static final int IsClient = 2;
@@ -23,29 +20,6 @@ public class WareContext {
     private int[][] nextState;
 
     private static JFrame WareFrame;
-
-    public String getToken(String prompt) {
-        do {
-            try {
-                System.out.println(prompt);
-                String line = reader.readLine();
-                StringTokenizer tokenizer = new StringTokenizer(line, "\n\r\f");
-                if (tokenizer.hasMoreTokens()) {
-                    return tokenizer.nextToken();
-                }
-            } catch (IOException ioe) {
-                System.exit(0);
-            }
-        } while (true);
-    }
-
-    private boolean yesOrNo(String prompt) {
-        String more = getToken(prompt + " (Y|y)[es] or anything else for no");
-        if (more.charAt(0) != 'y' && more.charAt(0) != 'Y') {
-            return false;
-        }
-        return true;
-    }
 
     private void retrieve() {
         try {
@@ -78,16 +52,9 @@ public class WareContext {
         return userID;
     }
 
-//  public void setSales() ---> A method to set Sales Person, it has no ID
-//  { userID = uID;}
     private WareContext() {
-//constructorSystem.out.println("In WareContext constructor");
-        //if (yesOrNo("Look for saved data and  use it?")) {
-            retrieve();
-        //} else {
-        //    warehouse = Warehouse.instance();
-        //}
-        // set up the FSM and transition table;
+        retrieve();
+
         states = new WareState[4];
         states[0] = ManagerState.instance();
         states[1] = SalesState.instance();
@@ -120,7 +87,6 @@ public class WareContext {
         WareFrame = new JFrame("Warehouse GUI");
 
         WareFrame.setSize(800, 600);
-        //WareFrame.setLocation(400, 400);
     }
 
     public JFrame getFrame() {
@@ -128,27 +94,25 @@ public class WareContext {
     }
 
     public void changeState(int transition) {
-        //System.out.println("current state " + currentState + " \n \n ");
         currentState = nextState[currentState][transition];
         if (currentState == -2) {
             System.out.println("Error has occurred");
             terminate();
-        }
-        if (currentState == -1) {
+        } else if (currentState == -1) {
             terminate();
         }
-        //System.out.println("current state " + currentState + " \n \n ");
         states[currentState].run();
     }
 
     private void terminate() {
-        if (yesOrNo("Save data?")) {
+        if (IOHelper.yesOrNo("Save data?")) {
             if (warehouse.save()) {
                 System.out.println(" The warehouse has been successfully saved in the file WarehouseData \n");
             } else {
                 System.out.println(" There has been an error in saving \n");
             }
         }
+        
         System.out.println(" Goodbye \n ");
         System.exit(0);
     }

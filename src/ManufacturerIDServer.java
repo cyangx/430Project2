@@ -1,50 +1,61 @@
+
 import java.io.*;
+
 public class ManufacturerIDServer implements Serializable {
-  private  int idCounter;
-  private static ManufacturerIDServer server;
-  private ManufacturerIDServer() {
-    idCounter = 1;
-  }
-  public static ManufacturerIDServer instance() {
-    if (server == null) {
-      return (server = new ManufacturerIDServer());
-    } else {
-      return server;
+
+    private int idCounter;
+    private static ManufacturerIDServer server;
+
+    private ManufacturerIDServer() {
+        idCounter = 1;
     }
-  }
-  public int getId() {
-    return idCounter++;
-  }
-  public String toString() {
-    return ("IdServer" + idCounter);
-  }
-  public static void retrieve(ObjectInputStream input) {
-    try {
-      server = (ManufacturerIDServer) input.readObject();
-    } catch(IOException ioe) {
-      ioe.printStackTrace();
-    } catch(Exception cnfe) {
-      cnfe.printStackTrace();
+
+    public static ManufacturerIDServer instance() {
+        if (server == null) {
+            return (server = new ManufacturerIDServer());
+        } else {
+            return server;
+        }
     }
-  }
-  private void writeObject(java.io.ObjectOutputStream output) throws IOException {
-    try {
-      output.defaultWriteObject();
-      output.writeObject(server);
-    } catch(IOException ioe) {
-      ioe.printStackTrace();
+
+    public int getId() {
+        return idCounter++;
     }
-  }
-  private void readObject(java.io.ObjectInputStream input) throws IOException, ClassNotFoundException {
-    try {
-      input.defaultReadObject();
-      if (server == null) {
-        server = (ManufacturerIDServer) input.readObject();
-      } else {
-        input.readObject();
-      }
-    } catch(IOException ioe) {
-      ioe.printStackTrace();
+
+    @Override
+    public String toString() {
+        return ("IdServer" + idCounter);
     }
-  }
+
+    public static void retrieve(ObjectInputStream input) {
+        try {
+            server = (ManufacturerIDServer) input.readObject();
+        } catch (IOException ioe) {
+            ioe.printStackTrace();
+        } catch (Exception cnfe) {
+            cnfe.printStackTrace();
+        }
+    }
+
+    private void writeObject(java.io.ObjectOutputStream output) throws IOException {
+        try {
+            output.defaultWriteObject();
+            output.writeObject(server);
+        } catch (IOException ioe) {
+            ioe.printStackTrace();
+        }
+    }
+
+    private void readObject(java.io.ObjectInputStream input) throws IOException, ClassNotFoundException {
+        try {
+            input.defaultReadObject();
+            if (server == null) {
+                server = (ManufacturerIDServer) input.readObject();
+            } else {
+                input.readObject();
+            }
+        } catch (IOException ioe) {
+            ioe.printStackTrace();
+        }
+    }
 }

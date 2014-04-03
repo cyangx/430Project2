@@ -79,6 +79,7 @@ public class Client implements Serializable {
         return this.id.equals(id);
     }
 
+    @Override
     public String toString() {
         String string = "Member name " + name + " address " + address + " id " + id + " phone " + phone;
         return string;

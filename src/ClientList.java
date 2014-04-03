@@ -59,13 +59,14 @@ public class ClientList implements Serializable {
     public Client find(String clientId) {
         for (Iterator iterator = clients.iterator(); iterator.hasNext();) {
             Client client = (Client) iterator.next();
-              if (clientId.equals(client.getId())) {
+            if (clientId.equals(client.getId())) {
                 return client;
             }
         }
         return null;
     }
 
+    @Override
     public String toString() {
         return clients.toString();
     }

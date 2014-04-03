@@ -1,5 +1,3 @@
-
-import java.util.*;
 import java.io.*;
 
 public class Supplier implements Serializable {
@@ -30,6 +28,7 @@ public class Supplier implements Serializable {
         return price;
     }
 
+    @Override
     public String toString() {
         return ("Id: " + supplierId() + " Supplier: " + supplierName() + " Price: " + supplierPrice());
     }

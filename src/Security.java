@@ -6,7 +6,6 @@
  * @author
  * @version 1.00 2014/3/20
  */
-
 public class Security {
 
     public boolean verifyPassword(String userID, String password, int state) {

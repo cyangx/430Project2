@@ -274,5 +274,4 @@ public class Warehouse implements Serializable {
         Client client = clientList.find(clientId);
         client.addToTransactionList(balance);
     }
-
 }

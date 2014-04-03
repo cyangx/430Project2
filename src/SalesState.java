@@ -1,8 +1,6 @@
 
 import java.awt.Container;
 import java.awt.FlowLayout;
-import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
 import java.util.*;
 import java.awt.*;
 import javax.swing.JButton;
@@ -22,18 +20,6 @@ public class SalesState extends WareState {
     private WareContext context;
     private static SalesState instance;
 
-    private static final int EXIT = IOHelper.EXIT;
-    private static final int ADD_PRODUCT = 1;
-    private static final int ACCEPT_PAYMENT = 2;
-    private static final int GET_OVERDUE_BALANCE = 3;
-    private static final int SHOW_WAITLIST = 4;
-    private static final int ACCEPT_SHIPMENT = 5;
-    private static final int SHOW_PRODUCTS = 6;
-    private static final int ADD_SUPPLIER = 7;
-    private static final int GET_PRODUCT_SUPPLIERS = 8;
-    private static final int BECOME_CLIENT = 9;
-    private static final int HELP = IOHelper.HELP;
-
     private JFrame salesFrame;
     private JPanel salesMenuPanel;
 
@@ -45,8 +31,9 @@ public class SalesState extends WareState {
     private JButton showProductsButton;
     private JButton addSupplierButton;
     private JButton getProductSuppliersButton;
-    private JButton backButton;    
+    private JButton backButton;
     private JButton switchToClientButton;
+    private JButton logoutButton;
 
     private AddProductPanel addProductPanel;
     private ShowProductsPanel showProductsPanel;
@@ -55,14 +42,11 @@ public class SalesState extends WareState {
     private ShowSuppliersPanel showSuppliersPanel;
     private ShowProductWaitlistPanel showProductWaitlistPanel;
     private ShowOverdueBalancePanel showOverdueBalancePanel;
-
     private AcceptPaymentPanel acceptPaymentPanel;
 
-    //private JPanel addProductPanel;
-    private JButton logoutButton;
-
-    private boolean confirmClick = false;
-
+    /**
+     * SalesState Default constructor
+     */
     private SalesState() {
         super();
         warehouse = Warehouse.instance();
@@ -98,8 +82,8 @@ public class SalesState extends WareState {
                 }
                 refreshGUI(showOverdueBalancePanel);
             }
-        });      
-        
+        });
+
         showWaitlistButton = new JButton("Show Waitlist");
         showWaitlistButton.addActionListener(new java.awt.event.ActionListener() {
             @Override
@@ -110,7 +94,7 @@ public class SalesState extends WareState {
                 refreshGUI(showProductWaitlistPanel);
             }
         });
-        
+
         acceptShipmentButton = new JButton("Accept Shipment");
         acceptShipmentButton.addActionListener(new java.awt.event.ActionListener() {
             @Override
@@ -121,7 +105,7 @@ public class SalesState extends WareState {
                 refreshGUI(acceptShipmentPanel);
             }
         });
-        
+
         showProductsButton = new JButton("Show Product List");
         showProductsButton.addActionListener(new java.awt.event.ActionListener() {
             @Override
@@ -133,7 +117,7 @@ public class SalesState extends WareState {
                 showProducts();
             }
         });
-        
+
         addSupplierButton = new JButton("Add Supplier to Product");
         addSupplierButton.addActionListener(new java.awt.event.ActionListener() {
             @Override
@@ -144,7 +128,7 @@ public class SalesState extends WareState {
                 refreshGUI(addSupplierPanel);
             }
         });
-        
+
         getProductSuppliersButton = new JButton("Get Product Suppliers");
         getProductSuppliersButton.addActionListener(new java.awt.event.ActionListener() {
             @Override
@@ -155,7 +139,7 @@ public class SalesState extends WareState {
                 refreshGUI(showSuppliersPanel);
             }
         });
-                     
+
         switchToClientButton = new JButton("Switch to Client");
         switchToClientButton.addActionListener(new java.awt.event.ActionListener() {
             @Override
@@ -163,7 +147,7 @@ public class SalesState extends WareState {
                 becomeClient();
             }
         });
-        
+
         logoutButton = new JButton("Logout");
         logoutButton.addActionListener(new java.awt.event.ActionListener() {
             @Override
@@ -171,7 +155,7 @@ public class SalesState extends WareState {
                 logout();
             }
         });
-       
+
         salesMenuPanel = new JPanel();
     }
 
@@ -232,14 +216,11 @@ public class SalesState extends WareState {
         double balance;
 
         if (warehouse.findClient(clientID)) {
-            //client is found so we accept a payment from a client
-
-            balance = warehouse.getClientBalance(clientID);
+            //client is found so we accept a payment from a client            
 
             warehouse.updateClientBalance(clientID, -payment);
-
             balance = warehouse.getClientBalance(clientID);
-            //IOHelper.Println("This client's new balance is: " + balance);
+
             JOptionPane.showMessageDialog(null, "The client's new balance is: " + balance);
 
         } else {
@@ -271,12 +252,11 @@ public class SalesState extends WareState {
                 x = x + member.toStringBalance() + "\n";
             }
         }
-        //JOptionPane.showMessageDialog(salesFrame, "The following have overdue balances:\n" + x);
+
         showOverdueBalancePanel.textArea1.setText("The following have overdue balances: \n" + x);
     }
 
     public void showWaitlist(String pId) {
-        //IOHelper.Println("Show wait list for product.");
         String wait = "";
 
         if (warehouse.findProduct(pId) != null) {
@@ -291,11 +271,9 @@ public class SalesState extends WareState {
         } else {
             JOptionPane.showMessageDialog(salesFrame, "Product not found.");
         }
-
     }
 
     public boolean acceptShipment(String productId, int quantity) {
-
         Product p = warehouse.findProduct(productId);
 
         if (p != null) {
@@ -319,7 +297,6 @@ public class SalesState extends WareState {
                         }
                     }
                 }
-
             }
             warehouse.updateQuantity(p, quantity);
         } else {
@@ -333,24 +310,22 @@ public class SalesState extends WareState {
     private void showProducts() {
         Iterator allProducts = warehouse.getProducts();
         String prodList = "";
+
         while (allProducts.hasNext()) {
             Product product = (Product) (allProducts.next());
             prodList = prodList + product.toString() + "\n";
         }
-        showProductsPanel.textArea1.setText("Product list: \n" + prodList);
 
-        //JOptionPane.showMessageDialog(salesFrame, "Product list: \n" + prodList);
+        showProductsPanel.textArea1.setText("Product list: \n" + prodList);
     }
 
     public boolean addSupplier(String pId, String mId, double price) {
-        //GUI version
-
         Product p = warehouse.findProduct(pId);
 
         if (p != null) {
-
             Manufacturer m;
             m = warehouse.findManufacturer(mId);
+
             if (m != null) {
                 warehouse.addSupplierToProduct(p, m, price);
                 JOptionPane.showMessageDialog(salesFrame, "Supplier added.");
@@ -366,7 +341,6 @@ public class SalesState extends WareState {
     }
 
     public void supplierList(String pId) {
-
         String supList = "";
 
         if (warehouse.findProduct(pId) != null) {
@@ -374,7 +348,6 @@ public class SalesState extends WareState {
 
             while (supplierList.hasNext()) {
                 Supplier sl = (Supplier) (supplierList.next());
-
                 supList = supList + sl.toString() + "\n";
             }
 
@@ -385,14 +358,12 @@ public class SalesState extends WareState {
     }
 
     private void becomeClient() {
-        //String userID = IOHelper.getToken("Please input the user id: ");
         String userID = JOptionPane.showInputDialog("Please input the user id: ");
 
         if (Warehouse.instance().findClient(userID)) {
             (WareContext.instance()).setUser(userID);
             (WareContext.instance()).changeState(WareContext.CLIENT_STATE); //go to sales state
         } else {
-            //System.out.println("Invalid user id.");
             JOptionPane.showMessageDialog(salesFrame, "Invalid user id.");
         }
     }
@@ -415,7 +386,8 @@ public class SalesState extends WareState {
         salesFrame.validate();
     }
 
-    public void run() {        
+    @Override
+    public void run() {
         salesFrame = WareContext.instance().getFrame();
         Container pane = salesFrame.getContentPane();
         pane.removeAll();
@@ -428,9 +400,9 @@ public class SalesState extends WareState {
         pane.add(this.showProductsButton);
         pane.add(this.addSupplierButton);
         pane.add(this.getProductSuppliersButton);
-        pane.add(this.switchToClientButton);      
+        pane.add(this.switchToClientButton);
         pane.add(this.logoutButton);
-        
+
         pane.add(salesMenuPanel, BorderLayout.CENTER);
 
         salesFrame.setVisible(true);

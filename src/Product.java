@@ -1,6 +1,5 @@
 
 import java.util.*;
-import java.lang.*;
 import java.io.*;
 
 public class Product implements Serializable {
@@ -18,7 +17,6 @@ public class Product implements Serializable {
         this.id = id;
         this.price = price;
         this.quantity = quantity;
-
     }
 
     public String getProduct() {
@@ -58,14 +56,12 @@ public class Product implements Serializable {
     }
 
     public void addToSupplierList(Supplier supplier) {
-        
         supplierList.add(supplier);
-        
-    }
-        public void deleteFromSupplierList(Supplier supplier) {
-        supplierList.remove(supplier);
     }
 
+    public void deleteFromSupplierList(Supplier supplier) {
+        supplierList.remove(supplier);
+    }
 
     public boolean fulfillOrder(Client c, int q) {
         Iterator allWaitlist = waitList.iterator();
@@ -92,6 +88,8 @@ public class Product implements Serializable {
         }
         return null;
     }
+
+    @Override
     public String toString() {
         return "id " + id + " product " + product + " price " + price + " quantity " + quantity;
     }

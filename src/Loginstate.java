@@ -34,10 +34,6 @@ public class Loginstate extends WareState implements ActionListener {
         managerButton = new JButton("Manager");
         managerButton.addActionListener(this);
 
-//userButton.addActionListener(this);
-        //logoutButton.addActionListener(this);
-        //ClerkButton.instance().setListener();
-        // context = WareContext.instance();
     }
 
     public void actionPerformed(ActionEvent event) {
@@ -102,9 +98,9 @@ public class Loginstate extends WareState implements ActionListener {
         String userID = JOptionPane.showInputDialog(loginFrame, "Please input sales username: ");
         String password = JOptionPane.showInputDialog(loginFrame, "Enter Password");
 
-        if (security.verifyPassword(userID, password, WareContext.MANAGER_STATE)) {                      
+        if (security.verifyPassword(userID, password, WareContext.MANAGER_STATE)) {
             (WareContext.instance()).setLogin(WareContext.IsManager);
-            (WareContext.instance()).changeState(WareContext.MANAGER_STATE);            
+            (WareContext.instance()).changeState(WareContext.MANAGER_STATE);
         } else {
             JOptionPane.showMessageDialog(loginFrame, "Incorrect Password");
         }
@@ -128,7 +124,7 @@ public class Loginstate extends WareState implements ActionListener {
         String userID = JOptionPane.showInputDialog(loginFrame, "Please input the user id: ");
         if (Warehouse.instance().findClient(userID) == true) {
             String password = JOptionPane.showInputDialog(loginFrame, "Enter Password");
-            if (security.verifyPassword(userID, password, WareContext.CLIENT_STATE)) {                
+            if (security.verifyPassword(userID, password, WareContext.CLIENT_STATE)) {
                 (WareContext.instance()).setLogin(WareContext.IsClient);
                 (WareContext.instance()).setUser(userID);
                 (WareContext.instance()).changeState(WareContext.CLIENT_STATE);
@@ -140,42 +136,10 @@ public class Loginstate extends WareState implements ActionListener {
         }
     }
 
-    /*
-    public void process() {
-        int command;
-        
-        System.out.println("Please input 0 to login as Manager\n"
-                + "input 1 to login as Salesclerk\n"
-                + "input 2 to login as Client\n"
-                + "input 3 to exit the system\n");
-
-        while ((command = getCommand()) != EXIT) {
-
-            switch (command) {
-                case MANAGER_LOGIN:
-                    manager();
-                    break;
-                case CLERK_LOGIN:
-                    sales();
-                    break;
-                case CLIENT_LOGIN:
-                    client();
-                    break;
-                default:
-                    System.out.println("Invalid choice");
-
-            }
-            
-            System.out.println("Please input 0 to login as Manager\n"
-                    + "input 1 to login as Salesclerk\n"
-                    + "input 2 to login as Client\n"
-                    + "input 3 to exit the system\n");
-        }
-        //(WareContext.instance()).changeState(2);
-        (WareContext.instance()).changeState(3);
-    }
-*/
-    
+    /**
+     *
+     */
+    @Override
     public void run() {
         loginFrame = WareContext.instance().getFrame();
         Container pane = loginFrame.getContentPane();
