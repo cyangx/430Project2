@@ -95,8 +95,8 @@ public class Loginstate extends WareState implements ActionListener {
     }
 
     private void manager() {
-        String userID = JOptionPane.showInputDialog(loginFrame, "Please input sales username: ");
-        String password = JOptionPane.showInputDialog(loginFrame, "Enter Password");
+        String userID = JOptionPane.showInputDialog(loginFrame, "Please input user ID: ");
+        String password = JOptionPane.showInputDialog(loginFrame, "Enter Password: ");
 
         if (security.verifyPassword(userID, password, WareContext.MANAGER_STATE)) {
             (WareContext.instance()).setLogin(WareContext.IsManager);
@@ -108,9 +108,9 @@ public class Loginstate extends WareState implements ActionListener {
 
     private void sales() {
         String userID = JOptionPane.showInputDialog(
-                loginFrame, "Please input sales username: ");
+                loginFrame, "Please input user ID: ");
 
-        String password = JOptionPane.showInputDialog(loginFrame, "Enter Password");
+        String password = JOptionPane.showInputDialog(loginFrame, "Enter Password: ");
 
         if (security.verifyPassword(userID, password, WareContext.SALES_STATE)) {
             (WareContext.instance()).setLogin(WareContext.IsSales);
@@ -121,9 +121,9 @@ public class Loginstate extends WareState implements ActionListener {
     }
 
     private void client() {
-        String userID = JOptionPane.showInputDialog(loginFrame, "Please input the user id: ");
+        String userID = JOptionPane.showInputDialog(loginFrame, "Please input user ID: ");
         if (Warehouse.instance().findClient(userID) == true) {
-            String password = JOptionPane.showInputDialog(loginFrame, "Enter Password");
+            String password = JOptionPane.showInputDialog(loginFrame, "Enter Password: ");
             if (security.verifyPassword(userID, password, WareContext.CLIENT_STATE)) {
                 (WareContext.instance()).setLogin(WareContext.IsClient);
                 (WareContext.instance()).setUser(userID);
