@@ -130,6 +130,7 @@ public class SalesState extends WareState {
                     showProductsPanel = new ShowProductsPanel();
                 }
                 refreshGUI(showProductsPanel);
+                showProducts();
             }
         });
         
@@ -179,34 +180,6 @@ public class SalesState extends WareState {
             instance = new SalesState();
         }
         return instance;
-    }
-
-    private int getNumber(String prompt) {
-        do {
-            try {
-                String item = IOHelper.getToken(prompt);
-                Integer num = Integer.valueOf(item);
-                return num.intValue();
-            } catch (NumberFormatException nfe) {
-                IOHelper.Println("Please input a number ");
-            }
-        } while (true);
-    }
-
-    private void help() {
-        IOHelper.Println("Sales State");
-        IOHelper.Println("Enter a number between " + EXIT + " and " + HELP + " as explained below:");
-        IOHelper.Println(EXIT + " to Exit\n");
-        IOHelper.Println(ADD_PRODUCT + " to add a product");
-        IOHelper.Println(ACCEPT_PAYMENT + " to accept client payment");
-        IOHelper.Println(GET_OVERDUE_BALANCE + " to get clients with balance");
-        IOHelper.Println(SHOW_WAITLIST + " to get waitlist for products");
-        IOHelper.Println(ACCEPT_SHIPMENT + " to accept shipment");
-        IOHelper.Println(SHOW_PRODUCTS + " to get a list of products");
-        IOHelper.Println(ADD_SUPPLIER + " to add a supplier to a product");
-        IOHelper.Println(GET_PRODUCT_SUPPLIERS + " to view suppliers for a product");
-        IOHelper.Println(BECOME_CLIENT + " to become a client");
-        IOHelper.Println(HELP + " for help");
     }
 
     public void addProducts() {
