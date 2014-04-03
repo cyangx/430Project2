@@ -31,7 +31,6 @@ public class SalesState extends WareState {
     private JButton showProductsButton;
     private JButton addSupplierButton;
     private JButton getProductSuppliersButton;
-    private JButton backButton;
     private JButton switchToClientButton;
     private JButton logoutButton;
 
