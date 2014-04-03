@@ -16,6 +16,7 @@ import java.io.*;
 import java.util.*;
 import javax.swing.JButton;
 import javax.swing.JFrame;
+import javax.swing.JOptionPane;
 
 public class ManagerState extends WareState implements ActionListener {
 
@@ -24,16 +25,16 @@ public class ManagerState extends WareState implements ActionListener {
     private WareContext context;
     private static ManagerState instance;
 
-    //manager specific calls
+    /*//manager specific calls
     private static final int EXIT = IOHelper.EXIT;
     private static final int ADD_CLIENT = 1;
     private static final int ADD_MANUFACTURER = 2;
     private static final int DELETE_SUPPLIER = 3;
     private static final int SHOW_MANUFACTURERS = 4;
     private static final int SHOW_CLIENTS = 5;
-    private static final int SALES_MENU = 6;
+    private static final int SALES_MENU = 6; 
     private static final int HELP = IOHelper.HELP;
-
+    */
     private JFrame managerFrame;
 
     private JButton logoutButton;
@@ -113,30 +114,93 @@ public class ManagerState extends WareState implements ActionListener {
         return instance;
     }
 
-    private void addClient() {
-        String name = IOHelper.getToken("Enter client name");
-        String address = IOHelper.getToken("Enter address");
-        String phone = IOHelper.getToken("Enter phone");
+    public void addClient() {
+        Client result = null;
+        
+        do {
+
+            String name = JOptionPane.showInputDialog(managerFrame, "Enter client name: ");
+            String address = JOptionPane.showInputDialog(managerFrame, "Enter Address: ");
+            String phone = JOptionPane.showInputDialog(managerFrame, "Enter Phone: ");
+
+            if (name.equals("") != true) {
+                result = warehouse.addMember(name, address, phone);
+            }
+            if (result != null) {
+                JOptionPane.showMessageDialog(managerFrame, result);
+            } else {
+                JOptionPane.showMessageDialog(managerFrame, "Client could not be added.");
+            }
+            int reply = JOptionPane.showConfirmDialog(managerFrame, "Add another Client?");
+            if (reply == JOptionPane.NO_OPTION || reply == JOptionPane.CANCEL_OPTION) {
+                break;
+            }
+        } while (true);//End of do while
+
+    }//End addClient
+    
+    public boolean addClient(String name, String address, String phone) {
         Client result;
+
+        if (name.equals("") || address.equals("") || phone.equals("")) {
+            JOptionPane.showMessageDialog(managerFrame, "Client could not be added.");
+            return false;
+        }
+
         result = warehouse.addMember(name, address, phone);
-        if (result == null) {
-            System.out.println("Could not add client");
-        }
-        System.out.println(result);
-    }
 
-    private void addManufacturer() {
-        String name = IOHelper.getToken("Enter manufacturer name");
-        String address = IOHelper.getToken("Enter address");
-        String phone = IOHelper.getToken("Enter phone");
+        if (result != null) {
+            JOptionPane.showMessageDialog(managerFrame, result);
+        } else {
+            JOptionPane.showMessageDialog(managerFrame, "Client could not be added.");
+            return false;
+        }
+        return true;
+    }//End addClients
+
+    public void addManufacturer() {
+        Manufacturer result = null;
+        
+        do {
+            String name = JOptionPane.showInputDialog(managerFrame, "Enter manufacturer name: ");
+            String address = JOptionPane.showInputDialog(managerFrame, "Enter Address: ");
+            String phone = JOptionPane.showInputDialog(managerFrame, "Enter Phone: ");
+
+            if (name.equals("") != true) {
+                result = warehouse.addManufacturer(name, address, phone);
+            }
+            if (result != null) {
+                JOptionPane.showMessageDialog(managerFrame, result);
+            } else {
+                JOptionPane.showMessageDialog(managerFrame, "Manufacturer could not be added.");
+            }
+            int reply = JOptionPane.showConfirmDialog(managerFrame, "Add another Manufacturer?");
+            if (reply == JOptionPane.NO_OPTION || reply == JOptionPane.CANCEL_OPTION) {
+                break;
+            }
+        } while (true);//End of do while
+
+    }//End addManufacturer
+    
+    public boolean addManufacturer(String name, String address, String phone) {
         Manufacturer result;
-        result = warehouse.addManufacturer(name, address, phone);
-        if (result == null) {
-            System.out.println("Could not add manufacturer");
-        }
-        System.out.println(result);
-    }
 
+        if (name.equals("") || address.equals("") || phone.equals("")) {
+            JOptionPane.showMessageDialog(managerFrame, "Manufacturer could not be added.");
+            return false;
+        }
+
+        result = warehouse.addManufacturer(name, address, phone);
+
+        if (result != null) {
+            JOptionPane.showMessageDialog(managerFrame, result);
+        } else {
+            JOptionPane.showMessageDialog(managerFrame, "Manufacturer could not be added.");
+            return false;
+        }
+        return true;
+    }//End addManufacturer
+        
     private void deleteSupplier() {
         do {
             String pId = IOHelper.getToken("Enter product id");
@@ -186,76 +250,9 @@ public class ManagerState extends WareState implements ActionListener {
         (WareContext.instance()).changeState(WareContext.SALES_STATE); //go to sales state
     }
 
-    private void save() {
-        if (warehouse.save()) {
-            System.out.println(" The warehouse has been successfully saved in the file WarehouseData \n");
-        } else {
-            System.out.println(" There has been an error in saving \n");
-        }
-    }
-
-    private void retrieve() {
-        try {
-            Warehouse tempLibrary = Warehouse.retrieve();
-            if (tempLibrary != null) {
-                System.out.println(" The warehouse has been successfully retrieved from the file WarehouseData \n");
-                warehouse = tempLibrary;
-            } else {
-                System.out.println("File doesnt exist; creating new warehouse");
-                warehouse = Warehouse.instance();
-
-            }
-        } catch (Exception cnfe) {
-            cnfe.printStackTrace();
-        }
-    }
-
-    private void help() {
-        IOHelper.Println("Manager Menu");
-        IOHelper.Println("Enter a number between " + EXIT + " and " + HELP + " as explained below:");
-        IOHelper.Println(EXIT + " to Exit\n");
-        IOHelper.Println(ADD_CLIENT + " to add a client");
-        IOHelper.Println(ADD_MANUFACTURER + " to add manufacturer");
-        IOHelper.Println(DELETE_SUPPLIER + " to delete supplier");
-        IOHelper.Println(SHOW_MANUFACTURERS + " to  display all manufacturers");
-        IOHelper.Println(SHOW_CLIENTS + " to  display all clients");
-        IOHelper.Println(SALES_MENU + " to  switch to the Sales Person menu");
-        IOHelper.Println(HELP + " for help");
-    }
 
     public void logout() {
         (WareContext.instance()).changeState(WareContext.LOGIN_STATE); // exit
-    }
-
-    public void process() {
-        int command;
-        help();
-        while ((command = IOHelper.GetCmd()) != EXIT) {
-            switch (command) {
-                case ADD_CLIENT:
-                    addClient();
-                    break;
-                case ADD_MANUFACTURER:
-                    addManufacturer();
-                    break;
-                case DELETE_SUPPLIER:
-                    deleteSupplier();
-                    break;
-                case SHOW_MANUFACTURERS:
-                    showManufacturers();
-                    break;
-                case SHOW_CLIENTS:
-                    showClients();
-                    break;
-                case SALES_MENU:
-                    salesMenu();
-                    break;
-                case HELP:
-                    help();
-                    break;
-            }
-        }
-        logout();
     }
 
     public void actionPerformed(ActionEvent event) {
