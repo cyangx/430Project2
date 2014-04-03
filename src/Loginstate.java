@@ -1,4 +1,5 @@
-
+//Author: Brandon Theisen - Stage 1. 
+//Author: Eric Dorphy, Cha Yang, Brandon Theisen and Anil Timilsina - Stage 2
 import java.awt.Container;
 import java.awt.FlowLayout;
 import java.awt.event.ActionEvent;
