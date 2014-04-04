@@ -1,9 +1,11 @@
+
+import java.util.Iterator;
+
 /*
  * To change this license header, choose License Headers in Project Properties.
  * To change this template file, choose Tools | Templates
  * and open the template in the editor.
  */
-
 /**
  *
  * @author edorphy
@@ -13,10 +15,14 @@ public class AcceptOrdersPanel extends javax.swing.JPanel {
     /**
      * Creates new form AcceptOrdersPanel
      */
+    double amount = 0;
+    private Order tempOrder;
+    String clientId = WareContext.instance().getUser();
+
     public AcceptOrdersPanel() {
         initComponents();
+        tempOrder = new Order(clientId);
     }
-    double amount = 0;
 
     /**
      * This method is called from within the constructor to initialize the form.
@@ -57,8 +63,13 @@ public class AcceptOrdersPanel extends javax.swing.JPanel {
         });
 
         jButton2.setText("Cancel Order");
+        jButton2.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                jButton2ActionPerformed(evt);
+            }
+        });
 
-        jLabel1.setText("Products");
+        jLabel1.setText("Invoice");
 
         jTextArea2.setEditable(false);
         jTextArea2.setColumns(20);
@@ -69,7 +80,6 @@ public class AcceptOrdersPanel extends javax.swing.JPanel {
 
         jLabel3.setText("Product ID:");
 
-        jTextField1.setText("jTextField1");
         jTextField1.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 jTextField1ActionPerformed(evt);
@@ -85,9 +95,12 @@ public class AcceptOrdersPanel extends javax.swing.JPanel {
 
         jLabel4.setText("Quantity");
 
-        jTextField2.setText("jTextField2");
+        jTextField2.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                jTextField2ActionPerformed(evt);
+            }
+        });
 
-        jTextField3.setText("jTextField3");
         jTextField3.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 jTextField3ActionPerformed(evt);
@@ -171,9 +184,9 @@ public class AcceptOrdersPanel extends javax.swing.JPanel {
 
     private void jButton3ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton3ActionPerformed
         // TODO add your handling code here:
+
         String productId;
         int quantity;
-
         try {
             productId = jTextField1.getText();
             quantity = Integer.parseInt(jTextField2.getText());
@@ -181,9 +194,11 @@ public class AcceptOrdersPanel extends javax.swing.JPanel {
             return;
         }
 
-        amount = amount + ClientState.instance().acceptOrders(productId, quantity);
+        Item tempItem = ClientState.instance().acceptOrders(productId, quantity);
+        amount = amount + tempItem.getTotal();
+        tempOrder.addItem(tempItem);
+        //System.out.println("Item added!");
         jTextField3.setText(Double.toString(amount));
-
 
     }//GEN-LAST:event_jButton3ActionPerformed
 
@@ -198,11 +213,79 @@ public class AcceptOrdersPanel extends javax.swing.JPanel {
     private void jButton1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton1ActionPerformed
         // TODO add your handling code here:
 
-        double amount;
-        amount = Double.parseDouble(jTextField3.getText());
-        ClientState.instance().processOrder(amount);
+        // ClientState.instance().processOrder(tempOrder);
+        String cId = WareContext.instance().getUser();
+        Client client = WareContext.instance().getClient();
+        double totalPrice = 0;
+        int quantity;
+        Iterator allItems = tempOrder.getItemList();
+        //System.out.println("Invoice");
+        //System.out.println("---------");
+
+        while (allItems.hasNext()) {
+            Item i = (Item) (allItems.next());
+            // System.out.println(i.print());
+            quantity = i.getQuantity();
+            totalPrice += i.getTotal();
+
+            Product product = WareContext.instance().findProduct(i.getProductId());
+            if (product != null) {
+                if (quantity > product.getQuantity()) {
+                    int waitListQuantity = quantity - product.getQuantity();
+                    //Item newItem = new Item(pId, quantity, (product.getPrice() * quantity));
+                    Item newWaitListItem = new Item(i.getProductId(), waitListQuantity, product.getPrice() * waitListQuantity);
+                    newWaitListItem.associateClientID(cId);
+                    //  order.getItemLists().add(newItem);
+                    Wait test = new Wait(client, waitListQuantity);
+                    jTextArea1.append(product.getQuantity() + " " + product.getProduct() + " fulfilled. \n");
+                    jTextArea1.append(waitListQuantity + " " + product.getProduct() + " added to wait list. \n");
+
+                    product.addToWaitList(test);
+                    //waitList.addItem(newWaitListItem);
+                    product.setQuantity(0); // Set it to 0 since its out of stock
+
+                } else if (quantity <= product.getQuantity()) {
+                    //Item newItem = new Item(pId, quantity, (product.getPrice() * quantity));
+                    //order.addItem(newItem);
+                    int newQuantity = product.getQuantity() - quantity;
+                    product.setQuantity(newQuantity);
+                    jTextArea1.append(quantity + " " + product.getProduct() + " fulfilled. \n");
+
+                    //System.out.println(quantity + " " + product.getProduct() + " fulfilled. ");
+                    // System.out.println("Quantity remaining: " + newQuantity);
+                }
+                WareContext.instance().updateClientBalance(clientId, product.getPrice() * quantity);
+
+            }
+        }
+        jTextArea1.append("Total: " + totalPrice + "\n\n");
+
+        WareContext.instance().addtoTransaction(cId, amount);
+
+        // clear all fields after order is processed
+        amount = 0;
+        jTextField1.setText("");
+        jTextField2.setText("");
+        jTextField3.setText("");
+        jTextArea2.setText("");
+        tempOrder.getItemLists().clear();
 
     }//GEN-LAST:event_jButton1ActionPerformed
+
+    private void jTextField2ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jTextField2ActionPerformed
+        // TODO add your handling code here:
+    }//GEN-LAST:event_jTextField2ActionPerformed
+
+    private void jButton2ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton2ActionPerformed
+        // TODO add your handling code here:
+        // Order is canceled. Clear order list and fields.
+        jTextField1.setText("");
+        jTextField2.setText("");
+        jTextField3.setText("");
+        jTextArea1.setText("");
+        jTextArea2.setText("");
+        tempOrder.getItemLists().clear();
+    }//GEN-LAST:event_jButton2ActionPerformed
 
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
