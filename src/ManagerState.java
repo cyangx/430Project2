@@ -10,15 +10,14 @@
  */
 import java.awt.Container;
 import java.awt.FlowLayout;
-import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
 import java.io.*;
 import java.util.*;
 import javax.swing.JButton;
 import javax.swing.JFrame;
 import javax.swing.JOptionPane;
+import javax.swing.JPanel;
 
-public class ManagerState extends WareState implements ActionListener {
+public class ManagerState extends WareState {
 
     private BufferedReader reader = new BufferedReader(new InputStreamReader(System.in));
     private static Warehouse warehouse;
@@ -36,13 +35,21 @@ public class ManagerState extends WareState implements ActionListener {
     private static final int HELP = IOHelper.HELP;
     */
     private JFrame managerFrame;
-
+    private JPanel managerPanel;
+    
     private JButton logoutButton;
     private JButton addClientButton;
     private JButton addManufacturerButton;
     private JButton deleteSupplierButton;
     private JButton showManufacturersButton;
     private JButton showClientsButton;
+    private JButton switchToSalesButton;
+    
+    private AddClientPanel addClientPanel;
+    private AddManufacturerPanel addManufacturerPanel;
+    private DeleteSupplierPanel deleteSupplierPanel;
+    private ShowManufacturersPanel showManufacturersPanel;
+    private ShowClientsPanel showClientsPanel;   
 
     private ManagerState() {
         super();
@@ -63,6 +70,11 @@ public class ManagerState extends WareState implements ActionListener {
                 // TODO
                 // if JPanel null, instantiate it here
                 // set menu pane to new pain
+                if (addClientPanel == null){
+                    addClientPanel = new AddClientPanel();
+                }
+                refreshGUI(addClientPanel);
+                addClient();
             }
         });
 
@@ -73,6 +85,11 @@ public class ManagerState extends WareState implements ActionListener {
                 // TODO
                 // if JPanel null, instantiate it here
                 // set menu pane to new pain
+                if (addManufacturerPanel == null){
+                    addManufacturerPanel = new AddManufacturerPanel();
+                }
+                refreshGUI(addManufacturerPanel);
+                addManufacturer();
             }
         });
 
@@ -83,6 +100,10 @@ public class ManagerState extends WareState implements ActionListener {
                 // TODO
                 // if JPanel null, instantiate it here
                 // set menu pane to new pain
+                if (deleteSupplierPanel == null){
+                    deleteSupplierPanel = new DeleteSupplierPanel();
+                }
+                refreshGUI(deleteSupplierPanel);
             }
         });
 
@@ -93,6 +114,11 @@ public class ManagerState extends WareState implements ActionListener {
                 // TODO
                 // if JPanel null, instantiate it here
                 // set menu pane to new pain
+                if (showManufacturersPanel == null){
+                    showManufacturersPanel = new ShowManufacturersPanel();
+                }
+                refreshGUI(showManufacturersPanel);
+                showManufacturers();
             }
         });
 
@@ -103,8 +129,27 @@ public class ManagerState extends WareState implements ActionListener {
                 // TODO
                 // if JPanel null, instantiate it here
                 // set menu pane to new pain
+                if (showClientsPanel == null){
+                    showClientsPanel = new ShowClientsPanel();
+                }
+                refreshGUI(showClientsPanel);
+                showClients();
             }
         });
+        
+        switchToSalesButton = new JButton("Switch to Sales");
+        switchToSalesButton.addActionListener(new java.awt.event.ActionListener() {
+            @Override
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                salesMenu();
+            }
+        });
+    }
+    
+    private void refreshGUI(JPanel showPanel) {
+        managerPanel.removeAll();
+        managerPanel.add(showPanel);
+        managerFrame.validate();
     }
 
     public static ManagerState instance() {
@@ -232,18 +277,28 @@ public class ManagerState extends WareState implements ActionListener {
 
     private void showManufacturers() {
         Iterator allManu = warehouse.getManufacturers();
+        String manufacturerList = "";
+        
         while (allManu.hasNext()) {
             Manufacturer manufacturer = (Manufacturer) (allManu.next());
-            System.out.println(manufacturer.toString());
+            manufacturerList = manufacturerList + manufacturer.toString() + "\n";
+            //System.out.println(manufacturer.toString());
         }
+        
+        //showManufacturersPanel.jTextArea.setText("Manufacturer List: \n" + manufacturerList);
     }
 
     private void showClients() {
         Iterator allMembers = warehouse.getMembers();
+        String clientList = "";
+        
         while (allMembers.hasNext()) {
             Client member = (Client) (allMembers.next());
-            System.out.println(member.toString());
+            clientList = clientList + member.toString() + "\n";
+            //System.out.println(member.toString());
         }
+        
+        //showClientsPanel.jTextArea.setText("Client List: \n" + clientList);
     }
 
     private void salesMenu() {
@@ -255,12 +310,13 @@ public class ManagerState extends WareState implements ActionListener {
         (WareContext.instance()).changeState(WareContext.LOGIN_STATE); // exit
     }
 
-    public void actionPerformed(ActionEvent event) {
+    /*public void actionPerformed(ActionEvent event) {
         if (event.getSource().equals(this.logoutButton)) {
             logout();
         }
-    }
+    }*/
 
+    @Override
     public void run() {
         //process();
         managerFrame = WareContext.instance().getFrame();
@@ -268,8 +324,13 @@ public class ManagerState extends WareState implements ActionListener {
         pane.removeAll();
         pane.setLayout(new FlowLayout());
         pane.add(this.logoutButton);
-        // TODO: add other buttons and items here
-
+        pane.add(this.addClientButton);
+        pane.add(this.addManufacturerButton);
+        pane.add(this.deleteSupplierButton);
+        pane.add(this.showManufacturersButton);
+        pane.add(this.showClientsButton);
+        pane.add(this.switchToSalesButton);
+        
         managerFrame.setVisible(true);
         managerFrame.paint(managerFrame.getGraphics());
     }
