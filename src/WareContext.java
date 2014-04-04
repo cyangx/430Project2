@@ -1,3 +1,4 @@
+
 import java.io.*;
 import javax.swing.JFrame;
 
@@ -38,6 +39,22 @@ public class WareContext {
 
     public void setLogin(int code) {
         currentUser = code;
+    }
+
+    public Client getClient() {
+        return warehouse.getClient(userID);
+    }
+
+    public Product findProduct(String pid) {
+        return warehouse.findProduct(pid);
+    }
+
+    public void addtoTransaction(String clientId, double balance) {
+        warehouse.addToTransactions(clientId, balance);
+    }
+
+    public void updateClientBalance(String clientId, double total) {
+        warehouse.updateClientBalance(clientId, total);
     }
 
     public void setUser(String uID) {
@@ -112,7 +129,7 @@ public class WareContext {
                 System.out.println(" There has been an error in saving \n");
             }
         }
-        
+
         System.out.println(" Goodbye \n ");
         System.exit(0);
     }
