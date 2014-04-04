@@ -11,7 +11,8 @@ import javax.swing.JPanel;
 /**
  *
  * @author Cha Yang
- *
+ * @author Eric - Refactor pre GUI
+ * 
  */
 public class ClientState extends WareState {
 
@@ -19,12 +20,6 @@ public class ClientState extends WareState {
     private static Warehouse warehouse;
     private WareContext context;
     private static ClientState instance;
-    private static final int EXIT = IOHelper.EXIT;
-    private static final int ACCEPT_ORDERS = 1;
-    private static final int GET_BALANCE = 2;
-    private static final int GET_TRANSACTIONS = 3;
-    private static final int SHOW_PRODUCTS = 4;
-    private static final int HELP = IOHelper.HELP;
 
     private JFrame clientFrame;
 
@@ -115,65 +110,25 @@ public class ClientState extends WareState {
         return instance;
     }
 
-    private void acceptOrdersOLD() {
-        String clientId = WareContext.instance().getUser();
-        String productId;
-        int quantity;
-        double amount = 0;
 
-        if (warehouse.findClient(clientId)) {
-            //client is found so we create an order for a client
-            warehouse.createOrder(clientId);
-            do {
-                productId = IOHelper.getToken("Enter product Id");
-                Product tempProduct = warehouse.findProduct(productId);
-
-                if (tempProduct == null) {
-                    System.out.println("Product Not found.");
-
-                } else {
-                    quantity = Integer.parseInt(IOHelper.getToken("Enter quantity"));
-                    warehouse.addToOrder(clientId, productId, quantity);
-                    warehouse.updateClientBalance(clientId, tempProduct.getPrice() * quantity);
-                    amount += (tempProduct.getPrice() * quantity);
-                }
-            } while (IOHelper.yesOrNo("Add more items?"));
-            // after order is done we need to add it to the order list
-
-            warehouse.addToOrderList();
-            warehouse.addToTransactions(clientId, amount);
-            warehouse.processOrder(clientId);
-        } else {
-            System.out.println("Client is not found.");
-        }
-    }//End of acceptOrders
-
-    public void processOrder(double amount) {
+    public void processOrder(Order order) {
         String clientId = WareContext.instance().getUser();
         
-        warehouse.addToOrderList(); // adds a order into an order list
-        warehouse.addToTransactions(clientId, amount);
-        warehouse.processOrder(clientId);
+        //warehouse.addToOrderList(); // OrderList is not used
+        //warehouse.processOrder(order);
     }
 
-    public double acceptOrders(String productId, int quantity) {
-        String clientId = WareContext.instance().getUser();
-        double amount = 0;
-        warehouse.createOrder(clientId);
+    public Item acceptOrders(String productId, int quantity) {
         Product tempProduct = warehouse.findProduct(productId);
 
         if (tempProduct != null) {
-            warehouse.addToOrder(clientId, productId, quantity);
-            warehouse.updateClientBalance(clientId, tempProduct.getPrice() * quantity);
-            amount += (tempProduct.getPrice() * quantity);
+            Item newItem = new Item(productId, quantity, (tempProduct.getPrice() * quantity));
             acceptOrderPanel.jTextArea2.append(productId + " " + quantity + "\n");
-
+            return newItem;
         } else {
-
             JOptionPane.showMessageDialog(clientFrame, "Product ID not found.");
-            return 0;
+            return null;
         }
-        return amount;
     }//End of acceptOrders
 
     private void showProducts() {
