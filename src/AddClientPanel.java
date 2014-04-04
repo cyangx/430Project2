@@ -109,6 +109,7 @@ public class AddClientPanel extends javax.swing.JPanel {
      */
     private void enterButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_enterButtonActionPerformed
         // TODO add your handling code here:
+        ManagerState.instance().addClient(nameTextBox.getText(), addressTextBox.getText(), phoneTextBox.getText());
     }//GEN-LAST:event_enterButtonActionPerformed
 
     /**

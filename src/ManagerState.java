@@ -1,8 +1,3 @@
-/*
- * To change this template, choose Tools | Templates
- * and open the template in the editor.
- */
-
 /**
  *
  * @author Anil
@@ -37,13 +32,13 @@ public class ManagerState extends WareState {
     private JFrame managerFrame;
     private JPanel managerPanel;
     
-    private JButton logoutButton;
-    private JButton addClientButton;
-    private JButton addManufacturerButton;
-    private JButton deleteSupplierButton;
-    private JButton showManufacturersButton;
-    private JButton showClientsButton;
-    private JButton switchToSalesButton;
+    private final JButton logoutButton;
+    private final JButton addClientButton;
+    private final JButton addManufacturerButton;
+    private final JButton deleteSupplierButton;
+    private final JButton showManufacturersButton;
+    private final JButton showClientsButton;
+    private final JButton switchToSalesButton;
     
     private AddClientPanel addClientPanel;
     private AddManufacturerPanel addManufacturerPanel;
@@ -54,6 +49,8 @@ public class ManagerState extends WareState {
     private ManagerState() {
         super();
         warehouse = Warehouse.instance();
+        
+        managerPanel = new JPanel();
 
         logoutButton = new JButton("Logout");
         logoutButton.addActionListener(new java.awt.event.ActionListener() {
@@ -74,7 +71,7 @@ public class ManagerState extends WareState {
                     addClientPanel = new AddClientPanel();
                 }
                 refreshGUI(addClientPanel);
-                addClient();
+                //addClient();
             }
         });
 
@@ -89,7 +86,7 @@ public class ManagerState extends WareState {
                     addManufacturerPanel = new AddManufacturerPanel();
                 }
                 refreshGUI(addManufacturerPanel);
-                addManufacturer();
+                //addManufacturer();
             }
         });
 
@@ -133,7 +130,8 @@ public class ManagerState extends WareState {
                     showClientsPanel = new ShowClientsPanel();
                 }
                 refreshGUI(showClientsPanel);
-                showClients();
+                
+                showClients();                
             }
         });
         
@@ -158,31 +156,6 @@ public class ManagerState extends WareState {
         }
         return instance;
     }
-
-    public void addClient() {
-        Client result = null;
-        
-        do {
-
-            String name = JOptionPane.showInputDialog(managerFrame, "Enter client name: ");
-            String address = JOptionPane.showInputDialog(managerFrame, "Enter Address: ");
-            String phone = JOptionPane.showInputDialog(managerFrame, "Enter Phone: ");
-
-            if (name.equals("") != true) {
-                result = warehouse.addMember(name, address, phone);
-            }
-            if (result != null) {
-                JOptionPane.showMessageDialog(managerFrame, result);
-            } else {
-                JOptionPane.showMessageDialog(managerFrame, "Client could not be added.");
-            }
-            int reply = JOptionPane.showConfirmDialog(managerFrame, "Add another Client?");
-            if (reply == JOptionPane.NO_OPTION || reply == JOptionPane.CANCEL_OPTION) {
-                break;
-            }
-        } while (true);//End of do while
-
-    }//End addClient
     
     public boolean addClient(String name, String address, String phone) {
         Client result;
@@ -203,30 +176,6 @@ public class ManagerState extends WareState {
         return true;
     }//End addClients
 
-    public void addManufacturer() {
-        Manufacturer result = null;
-        
-        do {
-            String name = JOptionPane.showInputDialog(managerFrame, "Enter manufacturer name: ");
-            String address = JOptionPane.showInputDialog(managerFrame, "Enter Address: ");
-            String phone = JOptionPane.showInputDialog(managerFrame, "Enter Phone: ");
-
-            if (name.equals("") != true) {
-                result = warehouse.addManufacturer(name, address, phone);
-            }
-            if (result != null) {
-                JOptionPane.showMessageDialog(managerFrame, result);
-            } else {
-                JOptionPane.showMessageDialog(managerFrame, "Manufacturer could not be added.");
-            }
-            int reply = JOptionPane.showConfirmDialog(managerFrame, "Add another Manufacturer?");
-            if (reply == JOptionPane.NO_OPTION || reply == JOptionPane.CANCEL_OPTION) {
-                break;
-            }
-        } while (true);//End of do while
-
-    }//End addManufacturer
-    
     public boolean addManufacturer(String name, String address, String phone) {
         Manufacturer result;
 
@@ -284,7 +233,7 @@ public class ManagerState extends WareState {
             manufacturerList = manufacturerList + manufacturer.toString() + "\n";
             //System.out.println(manufacturer.toString());
         }
-        
+        showManufacturersPanel.manufacturersTextView.setText(manufacturerList);
         //showManufacturersPanel.jTextArea.setText("Manufacturer List: \n" + manufacturerList);
     }
 
@@ -294,11 +243,10 @@ public class ManagerState extends WareState {
         
         while (allMembers.hasNext()) {
             Client member = (Client) (allMembers.next());
-            clientList = clientList + member.toString() + "\n";
-            //System.out.println(member.toString());
+            clientList = clientList + member.toString() + "\n";           
         }
         
-        //showClientsPanel.jTextArea.setText("Client List: \n" + clientList);
+        showClientsPanel.clientsTextView.setText(clientList);
     }
 
     private void salesMenu() {
@@ -309,12 +257,6 @@ public class ManagerState extends WareState {
     public void logout() {
         (WareContext.instance()).changeState(WareContext.LOGIN_STATE); // exit
     }
-
-    /*public void actionPerformed(ActionEvent event) {
-        if (event.getSource().equals(this.logoutButton)) {
-            logout();
-        }
-    }*/
 
     @Override
     public void run() {
@@ -330,6 +272,8 @@ public class ManagerState extends WareState {
         pane.add(this.showManufacturersButton);
         pane.add(this.showClientsButton);
         pane.add(this.switchToSalesButton);
+        
+        pane.add(managerPanel);
         
         managerFrame.setVisible(true);
         managerFrame.paint(managerFrame.getGraphics());
