@@ -40,6 +40,12 @@ public class AcceptPaymentPanel extends javax.swing.JPanel {
 
         jLabel2.setText("Payment Amount:");
 
+        paymentTextBox.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                paymentTextBoxActionPerformed(evt);
+            }
+        });
+
         clearButton.setText("CLEAR");
         clearButton.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
@@ -139,6 +145,10 @@ public class AcceptPaymentPanel extends javax.swing.JPanel {
         
         
     }//GEN-LAST:event_balanceButtonActionPerformed
+
+    private void paymentTextBoxActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_paymentTextBoxActionPerformed
+        // TODO add your handling code here:
+    }//GEN-LAST:event_paymentTextBoxActionPerformed
 
  
     // Variables declaration - do not modify//GEN-BEGIN:variables

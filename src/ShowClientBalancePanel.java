@@ -42,6 +42,11 @@ public class ShowClientBalancePanel extends javax.swing.JPanel {
 
         balanceTextBox.setEditable(false);
         balanceTextBox.setText("jTextField2");
+        balanceTextBox.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                balanceTextBoxActionPerformed(evt);
+            }
+        });
 
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(this);
         this.setLayout(layout);
@@ -73,11 +78,15 @@ public class ShowClientBalancePanel extends javax.swing.JPanel {
         );
     }// </editor-fold>//GEN-END:initComponents
 
+    private void balanceTextBoxActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_balanceTextBoxActionPerformed
+        // TODO add your handling code here:
+    }//GEN-LAST:event_balanceTextBoxActionPerformed
+
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
-    private javax.swing.JTextField balanceTextBox;
+    public javax.swing.JTextField balanceTextBox;
     private javax.swing.JLabel jLabel1;
     private javax.swing.JLabel jLabel2;
-    private javax.swing.JTextField nameTextBox;
+    public javax.swing.JTextField nameTextBox;
     // End of variables declaration//GEN-END:variables
 }

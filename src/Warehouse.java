@@ -146,6 +146,10 @@ public class Warehouse implements Serializable {
         return clientList.find(clientID) != null;
     }
 
+    public Client getClient(String clientID) {
+        return clientList.find(clientID);
+    }
+
     public Order findOrder(String clientID) {
         return orderList.find(clientID);
     }

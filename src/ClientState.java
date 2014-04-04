@@ -5,8 +5,14 @@ import java.io.*;
 import java.util.*;
 import javax.swing.JButton;
 import javax.swing.JFrame;
+import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 
+/**
+ *
+ * @author Cha Yang
+ *
+ */
 public class ClientState extends WareState {
 
     private BufferedReader reader = new BufferedReader(new InputStreamReader(System.in));
@@ -39,7 +45,7 @@ public class ClientState extends WareState {
         warehouse = Warehouse.instance();
 
         clientMenuPanel = new JPanel();
-        
+
         logoutButton = new JButton("Logout");
         logoutButton.addActionListener(new java.awt.event.ActionListener() {
             @Override
@@ -67,6 +73,7 @@ public class ClientState extends WareState {
                     balancePanel = new ShowClientBalancePanel();
                 }
                 refreshGUI(balancePanel);
+                getClientBalance();
             }
         });
 
@@ -78,6 +85,7 @@ public class ClientState extends WareState {
                     transactionPanel = new ShowClientTransactionsPanel();
                 }
                 refreshGUI(transactionPanel);
+                getTransactions();
             }
         });
 
@@ -89,6 +97,7 @@ public class ClientState extends WareState {
                     productsPanel = new ShowProductsPanel();
                 }
                 refreshGUI(productsPanel);
+                showProducts();
             }
         });
     }
@@ -106,7 +115,7 @@ public class ClientState extends WareState {
         return instance;
     }
 
-    private void acceptOrders() {
+    private void acceptOrdersOLD() {
         String clientId = WareContext.instance().getUser();
         String productId;
         int quantity;
@@ -139,50 +148,66 @@ public class ClientState extends WareState {
         }
     }//End of acceptOrders
 
+    public void processOrder(double amount) {
+        String clientId = WareContext.instance().getUser();
+        
+        warehouse.addToOrderList(); // adds a order into an order list
+        warehouse.addToTransactions(clientId, amount);
+        warehouse.processOrder(clientId);
+    }
+
+    public double acceptOrders(String productId, int quantity) {
+        String clientId = WareContext.instance().getUser();
+        double amount = 0;
+        warehouse.createOrder(clientId);
+        Product tempProduct = warehouse.findProduct(productId);
+
+        if (tempProduct != null) {
+            warehouse.addToOrder(clientId, productId, quantity);
+            warehouse.updateClientBalance(clientId, tempProduct.getPrice() * quantity);
+            amount += (tempProduct.getPrice() * quantity);
+            acceptOrderPanel.jTextArea2.append(productId + " " + quantity + "\n");
+
+        } else {
+
+            JOptionPane.showMessageDialog(clientFrame, "Product ID not found.");
+            return 0;
+        }
+        return amount;
+    }//End of acceptOrders
+
     private void showProducts() {
         Iterator allProducts = warehouse.getProducts();
+        String prodList = "";
+
         while (allProducts.hasNext()) {
             Product product = (Product) (allProducts.next());
-            System.out.println(product.toString());
+            prodList = prodList + product.toString() + "\n";
         }
+        productsPanel.jTextArea1.setText("Product list: \n" + prodList);
     }
 
     private void getClientBalance() {
         String clientId = WareContext.instance().getUser();
-        if (warehouse.findClient(clientId)) {
-            //client is found so we create an order for a client
-            double total = warehouse.getClientBalance(clientId);
-            System.out.println("Total balance: " + total);
-        } else {
-            System.out.println("Client is not found.");
-        }
+        Client client = warehouse.getClient(clientId);
+        double total = client.getBalance();
+        balancePanel.nameTextBox.setText(client.getName());
+        balancePanel.balanceTextBox.setText(Double.toString(total));
+
     }
 
     private void getTransactions() {
-        Iterator result;
         String clientId = WareContext.instance().getUser();
-        //Calendar date  = getDate("Please enter the date for which you want records as mm/dd/yy");
-        result = warehouse.getTransactions(clientId);
-        if (result == null) {
-            System.out.println("Invalid Client ID");
-        } else {
-            while (result.hasNext()) {
-                Transaction transaction = (Transaction) result.next();
-                System.out.println(transaction.toString());
-            }
-            System.out.println("\n  There are no more transactions \n");
-        }
-    }//End of getTransactions
+        Client client = warehouse.getClient(clientId);
+        Iterator result = warehouse.getTransactions(clientId);
+        String transList = "";
 
-    private void help() {
-        IOHelper.Println("Client Menu");
-        IOHelper.Println("Enter a number between " + EXIT + " and " + HELP + " as explained below:");
-        IOHelper.Println(EXIT + " to Exit\n");
-        IOHelper.Println(ACCEPT_ORDERS + " to accept orders from a client");
-        IOHelper.Println(GET_BALANCE + " to get a client balance ");
-        IOHelper.Println(GET_TRANSACTIONS + " to show transaction list of a client");
-        IOHelper.Println(SHOW_PRODUCTS + " to  print products");
-        IOHelper.Println(HELP + " for help");
+        while (result.hasNext()) {
+            Transaction transaction = (Transaction) (result.next());
+            transList = transList + transaction.toString() + "\n";
+        }
+        transactionPanel.nameTextBox.setText(client.getName());
+        transactionPanel.transactionTextView.setText("Transaction list: \n" + transList);
     }
 
     public void logout() {
@@ -203,31 +228,6 @@ public class ClientState extends WareState {
         }
     }
 
-    public void process() {
-        int command;
-        help();
-        while ((command = IOHelper.GetCmd()) != EXIT) {
-            switch (command) {
-                case ACCEPT_ORDERS:
-                    acceptOrders();
-                    break;
-                case GET_BALANCE:
-                    getClientBalance();
-                    break;
-                case GET_TRANSACTIONS:
-                    getTransactions();
-                    break;
-                case SHOW_PRODUCTS:
-                    showProducts();
-                    break;
-                case HELP:
-                    help();
-                    break;
-            }
-        }
-        logout();
-    }
-
     @Override
     public void run() {
         //process();
@@ -241,7 +241,6 @@ public class ClientState extends WareState {
         pane.add(this.showTransactionsButton);
         pane.add(this.showProductsButton);
         pane.add(this.clientMenuPanel);
-        
 
         clientFrame.setVisible(true);
         clientFrame.paint(clientFrame.getGraphics());

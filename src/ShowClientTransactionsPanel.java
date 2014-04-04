@@ -34,7 +34,6 @@ public class ShowClientTransactionsPanel extends javax.swing.JPanel {
         jLabel1.setText("Client Name:");
 
         nameTextBox.setEditable(false);
-        nameTextBox.setText("jTextField1");
 
         transactionTextView.setColumns(20);
         transactionTextView.setRows(5);
@@ -72,7 +71,7 @@ public class ShowClientTransactionsPanel extends javax.swing.JPanel {
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JLabel jLabel1;
     private javax.swing.JScrollPane jScrollPane1;
-    private javax.swing.JTextField nameTextBox;
-    private javax.swing.JTextArea transactionTextView;
+    public javax.swing.JTextField nameTextBox;
+    public javax.swing.JTextArea transactionTextView;
     // End of variables declaration//GEN-END:variables
 }
